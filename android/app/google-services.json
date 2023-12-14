@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "114679571707",
+    "project_id": "alnoorcomma",
+    "storage_bucket": "alnoorcomma.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114679571707:android:828af3d5a4d4d2df76bc5e",
+        "android_client_info": {
+          "package_name": "com.comma.alnoor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8aBzMytEUMiJ6WeRv_gxXW7lioUHCSM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
