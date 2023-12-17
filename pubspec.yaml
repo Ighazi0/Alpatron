@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   cupertino_icons: ^1.0.2
   dio: ^5.3.3
   syncfusion_flutter_charts: ^23.2.4
@@ -29,7 +32,6 @@ dependencies:
   shimmer: ^3.0.0
   icons_plus: ^4.0.0
   carousel_slider: ^4.2.1
-  flutter_stripe: ^9.6.0
   ticket_widget: ^1.0.2
   flutter_credit_card: ^4.0.1
   cryptlib_2_0: ^0.0.3
@@ -45,5 +47,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/
+    - assets/lang/
+    - assets/lotties/
