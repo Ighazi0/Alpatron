@@ -1,5 +1,3 @@
-import 'package:alnoor/models/category_model.dart';
-import 'package:alnoor/views/screens/admin_categories.dart';
 import 'package:alnoor/views/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -19,32 +17,19 @@ class AdminDrawer extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: const Icon(Icons.category),
-          title: const Text('Categories'),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminCategories(
-                    category: CategoryModel(titleEn: 'Categories'),
-                  ),
-                ));
-          },
-        ),
-        ListTile(
           leading: const Icon(Icons.inventory),
           title: const Text('Products'),
           onTap: () {
             Navigator.pushNamed(context, 'adminP');
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.local_activity),
-          title: const Text('Coupons'),
-          onTap: () {
-            Navigator.pushNamed(context, 'coupons');
-          },
-        ),
+        // ListTile(
+        //   leading: const Icon(Icons.local_activity),
+        //   title: const Text('Coupons'),
+        //   onTap: () {
+        //     Navigator.pushNamed(context, 'coupons');
+        //   },
+        // ),
         ListTile(
           leading: const Icon(
             Icons.logout,

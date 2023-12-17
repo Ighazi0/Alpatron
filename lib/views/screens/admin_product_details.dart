@@ -1,13 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/category_picker_bottom_sheet.dart';
 import 'package:alnoor/views/widgets/edit_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_pickers/image_pickers.dart';
 
@@ -24,7 +22,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
   GlobalKey<FormState> key = GlobalKey();
 
   List url = [], selectedImages = [];
-  String cat = '', mainCat = '';
+  String cat = '';
   TextEditingController tar = TextEditingController(),
       ten = TextEditingController(),
       dar = TextEditingController(),
@@ -32,59 +30,6 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
       stock = TextEditingController(),
       discount = TextEditingController(text: '0'),
       price = TextEditingController();
-
-  Future<List<CategoryModel>> fetchCategories() async {
-    List<CategoryModel> results = [];
-
-    QuerySnapshot querySnapshot =
-        await firestore.collection('categories').get();
-
-    for (var document in querySnapshot.docs) {
-      results
-          .add(CategoryModel.fromJson(document.data() as Map<String, dynamic>));
-    }
-
-    if (mainCat.isEmpty) {
-      if (widget.product.id.isEmpty) {
-        mainCat = '${results[0].titleEn}%${results[0].id}';
-      } else {
-        var c = results
-            .where((element) => element.id == widget.product.mainCategory);
-        if (c.isEmpty) {
-          mainCat = '${results[0].titleEn}%${results[0].id}';
-        } else {
-          mainCat = '${c.first.titleEn}%${c.first.id}';
-        }
-      }
-      setState(() {});
-    }
-
-    return results;
-  }
-
-  Future<List<CategoryModel>> fetchSubCategories() async {
-    List<CategoryModel> results = [];
-
-    QuerySnapshot querySnapshot = await firestore
-        .collection('categories')
-        .doc(mainCat.split('%')[1])
-        .collection('categories')
-        .get();
-
-    for (var document in querySnapshot.docs) {
-      results
-          .add(CategoryModel.fromJson(document.data() as Map<String, dynamic>));
-    }
-
-    if (cat.isEmpty) {
-      var c = results.where((element) => element.id == widget.product.category);
-      if (c.isNotEmpty) {
-        cat = '${c.first.titleEn}%${c.first.id}';
-      }
-    }
-
-    return results;
-  }
 
   submit() async {
     if (!key.currentState!.validate()) {
@@ -120,7 +65,6 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
         'descriptionEn': den.text,
         'favorites': [],
         'category': cat.isEmpty ? '' : cat.split('%')[1],
-        'mainCategory': mainCat.isEmpty ? '' : mainCat.split('%')[1],
         'seller': 0,
         'media': url,
         'extra': [],
@@ -137,7 +81,6 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
         'descriptionEn': den.text,
         'media': url,
         'category': cat.isEmpty ? '' : cat.split('%')[1],
-        'mainCategory': mainCat.isEmpty ? '' : mainCat.split('%')[1],
         'price': double.parse(price.text),
         'discount': double.parse(discount.text),
         'stock': int.parse(stock.text),
@@ -292,81 +235,28 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
                     title: 'titleAr'),
                 const Padding(
                   padding: EdgeInsets.only(left: 5, top: 20),
-                  child: Text('Main category'),
+                  child: Text('Category'),
                 ),
-                FutureBuilder(
-                    future: fetchCategories(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<CategoryModel> data = snapshot.data!;
-
-                        return GestureDetector(
-                          onTap: () {
-                            staticWidgets.showBottom(
-                                context,
-                                CategoryPickerBottomSheet(
-                                    list: data,
-                                    function: (c) {
-                                      setState(() {
-                                        mainCat = c;
-                                        cat = '';
-                                      });
-                                    }),
-                                0.5,
-                                0.9);
-                          },
-                          child: Container(
-                            width: dWidth,
-                            margin: const EdgeInsets.only(top: 10),
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10))),
-                            child: Text(mainCat.split('%')[0]),
-                          ),
-                        );
-                      }
-                      return const Text('Loading...');
-                    }),
-                const Padding(
-                  padding: EdgeInsets.only(left: 5, top: 10),
-                  child: Text('Sub category'),
+                GestureDetector(
+                  onTap: () {
+                    staticWidgets.showBottom(context,
+                        CategoryPickerBottomSheet(function: (c) {
+                      setState(() {
+                        cat = '';
+                      });
+                    }), 0.5, 0.9);
+                  },
+                  child: Container(
+                    width: dWidth,
+                    margin: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10))),
+                    child: Text(cat.split('%')[0]),
+                  ),
                 ),
-                FutureBuilder(
-                    future: fetchSubCategories(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<CategoryModel> data = snapshot.data!;
-
-                        return GestureDetector(
-                          onTap: () {
-                            staticWidgets.showBottom(
-                                context,
-                                CategoryPickerBottomSheet(
-                                    list: data,
-                                    function: (c) {
-                                      setState(() {
-                                        cat = c;
-                                      });
-                                    }),
-                                0.5,
-                                0.9);
-                          },
-                          child: Container(
-                            width: dWidth,
-                            margin: const EdgeInsets.only(top: 10),
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10))),
-                            child: Text(cat.split('%')[0]),
-                          ),
-                        );
-                      }
-                      return const Text('Loading...');
-                    }),
                 const SizedBox(
                   height: 20,
                 ),

@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 
 class CategoryPickerBottomSheet extends StatefulWidget {
   const CategoryPickerBottomSheet(
-      {super.key, required this.list, this.id = '', required this.function});
+      {super.key, this.id = '', required this.function});
   final String id;
   final Function function;
-  final List<CategoryModel> list;
 
   @override
   State<CategoryPickerBottomSheet> createState() =>
@@ -22,8 +21,8 @@ class _CategoryPickerBottomSheetState extends State<CategoryPickerBottomSheet> {
 
   @override
   void initState() {
-    result = widget.list.where((element) =>
-        element.titleEn.toLowerCase().contains(controller.text.toLowerCase()));
+    // result = widget.list.where((element) =>
+    //     element.titleEn.toLowerCase().contains(controller.text.toLowerCase()));
     super.initState();
   }
 

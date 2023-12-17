@@ -46,7 +46,7 @@ class _EditTextState extends State<EditText> {
               onFieldSubmitted: (value) => widget.function(),
               decoration: InputDecoration(
                   hintText: widget.hint,
-                  suffix: widget.secure
+                  suffixIcon: widget.secure
                       ? IconButton(
                           onPressed: () {
                             setState(() {
