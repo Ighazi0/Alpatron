@@ -54,7 +54,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                 }
               }
             : {},
-        title: 'orderDetails'.tr(context),
+        title: '',
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -89,17 +89,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                 const SizedBox(
                   height: 5,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${'discount'.tr(context)}:'),
-                    Text('- ${'AED'.tr(context)} ${order.discount}',
-                        style: const TextStyle()),
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
                 const Divider(
                   color: Colors.grey,
                 ),
@@ -108,7 +97,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                   children: [
                     Text('${'total'.tr(context)}:'),
                     Text(
-                      '${'AED'.tr(context)} ${(order.total - (order.total * (order.discount / 100)) + order.delivery).toStringAsFixed(2)}',
+                      '${'AED'.tr(context)} ${(order.total + order.delivery).toStringAsFixed(2)}',
                     ),
                   ],
                 ),

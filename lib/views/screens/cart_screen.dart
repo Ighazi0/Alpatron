@@ -30,54 +30,45 @@ class _CartScreenState extends State<CartScreen> {
                 : SafeArea(
                     child: Container(
                       width: dWidth,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      height: 100,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${'subtotal'.tr(context)} (${userCubit.totalCartCount()} ${'items'.tr(context)})',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  '${'AED'.tr(context)} ${userCubit.totalCartPrice().toStringAsFixed(2)}',
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: MaterialButton(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                onPressed: () {
-                                  if (auth.userData.uid.isEmpty) {
-                                    Fluttertoast.showToast(
-                                        msg: 'pleaseFirst'.tr(context));
-                                    auth.logOut();
-                                  } else {
-                                    Navigator.pushNamed(context, 'checkout');
-                                  }
-                                },
-                                height: 45,
-                                minWidth: dWidth,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(25))),
-                                color: primaryColor,
-                                child: Text(
-                                  'CHECKOUT'.tr(context),
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      height: 60,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${'AED'.tr(context)} ${(userCubit.totalCartPrice() + 25).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          MaterialButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            onPressed: () {
+                              if (auth.userData.uid.isEmpty) {
+                                Fluttertoast.showToast(
+                                    msg: 'pleaseFirst'.tr(context));
+                                auth.logOut();
+                              } else {
+                                Navigator.pushNamed(context, 'checkout');
+                              }
+                            },
+                            height: 45,
+                            minWidth: 100,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25))),
+                            color: primaryColor,
+                            child: const Text(
+                              'Proced to pay',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
                               ),
-                            )
-                          ]),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
             body: Center(
@@ -98,97 +89,171 @@ class _CartScreenState extends State<CartScreen> {
                         )
                       ],
                     )
-                  : ListView.separated(
-                      itemCount: userCubit.cartList.length,
-                      separatorBuilder: (context, index) => const Divider(
-                            height: 0,
-                          ),
-                      itemBuilder: (context, index) {
-                        CartModel cart =
-                            userCubit.cartList.values.toList()[index];
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 10),
-                            onTap: () async {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetails(
-                                        product: cart.productData!),
-                                  ));
-                            },
-                            leading: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5)),
-                              child: CachedNetworkImage(
-                                imageUrl: cart.productData!.media![0],
-                                width: 75,
-                                height: 75,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    locale.locale == 'ar'
-                                        ? cart.productData!.titleAr
-                                        : cart.productData!.titleEn,
-                                    overflow: TextOverflow.ellipsis,
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: ListView.separated(
+                              itemCount: userCubit.cartList.length,
+                              separatorBuilder: (context, index) =>
+                                  const Divider(
+                                    height: 0,
                                   ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      staticWidgets.showBottom(
+                              itemBuilder: (context, index) {
+                                CartModel cart =
+                                    userCubit.cartList.values.toList()[index];
+                                return Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    onTap: () async {
+                                      Navigator.push(
                                           context,
-                                          BottomSheetRemoveCart(
-                                            index: index,
-                                          ),
-                                          0.4,
-                                          0.5);
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductDetails(
+                                                    product: cart.productData!),
+                                          ));
                                     },
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: Colors.black,
-                                    ))
-                              ],
-                            ),
-                            visualDensity: const VisualDensity(vertical: 4),
-                            subtitle: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${'AED'.tr(context)} ${cart.productData!.price}',
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Counter(
-                                  remove: () {
-                                    userCubit.addToCart(cart.productData!, -1);
-                                  },
-                                  add: () {
-                                    userCubit.addToCart(cart.productData!, 1);
-                                  },
-                                  other: () {
-                                    staticWidgets.showBottom(
-                                        context,
-                                        BottomSheetRemoveCart(
-                                          index: index,
+                                    leading: ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      child: CachedNetworkImage(
+                                        imageUrl: cart.productData!.media![0],
+                                        width: 75,
+                                        height: 75,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            locale.locale == 'ar'
+                                                ? cart.productData!.titleAr
+                                                : cart.productData!.titleEn,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
-                                        0.4,
-                                        0.5);
-                                  },
-                                  count: cart.count,
-                                )
+                                        IconButton(
+                                            onPressed: () {
+                                              staticWidgets.showBottom(
+                                                  context,
+                                                  BottomSheetRemoveCart(
+                                                    index: index,
+                                                  ),
+                                                  0.4,
+                                                  0.5);
+                                            },
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.black,
+                                            ))
+                                      ],
+                                    ),
+                                    visualDensity:
+                                        const VisualDensity(vertical: 4),
+                                    subtitle: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '${'AED'.tr(context)} ${cart.productData!.price}',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Counter(
+                                          remove: () {
+                                            userCubit.addToCart(
+                                                cart.productData!, -1);
+                                          },
+                                          add: () {
+                                            userCubit.addToCart(
+                                                cart.productData!, 1);
+                                          },
+                                          other: () {
+                                            staticWidgets.showBottom(
+                                                context,
+                                                BottomSheetRemoveCart(
+                                                  index: index,
+                                                ),
+                                                0.4,
+                                                0.5);
+                                          },
+                                          count: cart.count,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                        Container(
+                          width: dWidth,
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0.5,
+                                  blurRadius: 0.5,
+                                ),
                               ],
-                            ),
+                              color: Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10))),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Price details:',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      'Products (${userCubit.totalCartCount()} ${'items'.tr(context)})'),
+                                  Text(
+                                      '${'AED'.tr(context)} ${userCubit.totalCartPrice().toStringAsFixed(2)}'),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Delivery charges'),
+                                  Text('${'AED'.tr(context)} 25'),
+                                ],
+                              ),
+                              const Divider(),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Total amount'),
+                                  Text(
+                                      '${'AED'.tr(context)} ${(userCubit.totalCartPrice() + 25).toStringAsFixed(2)}'),
+                                ],
+                              )
+                            ],
                           ),
-                        );
-                      }),
+                        )
+                      ],
+                    ),
             ));
       },
     );
