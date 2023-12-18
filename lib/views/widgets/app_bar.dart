@@ -1,4 +1,3 @@
-import 'package:alnoor/controllers/app_localization.dart';
 import 'package:flutter/material.dart';
 
 class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
@@ -18,7 +17,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: const TextStyle(color: Colors.black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leadingWidth: 60,
       actions: [
@@ -34,7 +33,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                         action['function']();
                       },
                       child: Chip(
-                        label: Text(action['title'].toString().tr(context)),
+                        label: Text(action['title'].toString()),
                         padding: EdgeInsets.zero,
                         shape: const RoundedRectangleBorder(
                             borderRadius:
@@ -49,13 +48,10 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
           onTap: () async {
             Navigator.pop(context);
           },
-          child: CircleAvatar(
-            backgroundColor: Colors.grey.shade200,
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 20,
-            ),
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+            size: 20,
           ),
         ),
       ),

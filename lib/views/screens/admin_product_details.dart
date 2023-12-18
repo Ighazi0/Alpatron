@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/category_picker_bottom_sheet.dart';
@@ -20,7 +21,8 @@ class AdminProductDetails extends StatefulWidget {
 class _AdminProductDetailsState extends State<AdminProductDetails> {
   bool loading = false;
   GlobalKey<FormState> key = GlobalKey();
-
+  List<CategoryModel> categories =
+      staticData.categories.map((e) => CategoryModel.fromJson(e)).toList();
   List url = [], selectedImages = [];
   String cat = '';
   TextEditingController tar = TextEditingController(),
@@ -64,7 +66,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
         'descriptionAr': dar.text,
         'descriptionEn': den.text,
         'favorites': [],
-        'category': cat.isEmpty ? '' : cat.split('%')[1],
+        'category': cat,
         'seller': 0,
         'media': url,
         'extra': [],
@@ -80,7 +82,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
         'descriptionAr': dar.text,
         'descriptionEn': den.text,
         'media': url,
-        'category': cat.isEmpty ? '' : cat.split('%')[1],
+        'category': cat,
         'price': double.parse(price.text),
         'discount': double.parse(discount.text),
         'stock': int.parse(stock.text),
@@ -113,6 +115,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
         selectedImages.add(e);
         url.add(e);
       }
+
       tar.text = widget.product.titleAr;
       ten.text = widget.product.titleEn;
       dar.text = widget.product.descriptionAr;
@@ -120,6 +123,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
       discount.text = widget.product.discount.toStringAsFixed(2);
       price.text = widget.product.price.toStringAsFixed(2);
       stock.text = widget.product.stock.toString();
+      cat = widget.product.category;
     }
 
     super.initState();
@@ -242,7 +246,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
                     staticWidgets.showBottom(context,
                         CategoryPickerBottomSheet(function: (c) {
                       setState(() {
-                        cat = '';
+                        cat = c;
                       });
                     }), 0.5, 0.9);
                   },
@@ -254,7 +258,13 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
                         color: Colors.grey.shade300,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10))),
-                    child: Text(cat.split('%')[0]),
+                    child: Text(
+                        categories.where((element) => element.id == cat).isEmpty
+                            ? ''
+                            : categories
+                                .where((element) => element.id == cat)
+                                .first
+                                .titleEn),
                   ),
                 ),
                 const SizedBox(

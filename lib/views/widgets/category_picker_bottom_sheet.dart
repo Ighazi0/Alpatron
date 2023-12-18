@@ -18,11 +18,13 @@ class CategoryPickerBottomSheet extends StatefulWidget {
 class _CategoryPickerBottomSheetState extends State<CategoryPickerBottomSheet> {
   TextEditingController controller = TextEditingController();
   Iterable<CategoryModel> result = [];
+  List<CategoryModel> categories =
+      staticData.categories.map((e) => CategoryModel.fromJson(e)).toList();
 
   @override
   void initState() {
-    // result = widget.list.where((element) =>
-    //     element.titleEn.toLowerCase().contains(controller.text.toLowerCase()));
+    result = categories.where((element) =>
+        element.titleEn.toLowerCase().contains(controller.text.toLowerCase()));
     super.initState();
   }
 
@@ -46,7 +48,9 @@ class _CategoryPickerBottomSheetState extends State<CategoryPickerBottomSheet> {
             },
           ),
           result.isEmpty
-              ? const Icon(Icons.search_off)
+              ? Builder(builder: (context) {
+                  return const Expanded(child: Icon(Icons.search_off));
+                })
               : Flexible(
                   child: ListView.builder(
                   itemCount: result.length,
@@ -56,7 +60,7 @@ class _CategoryPickerBottomSheetState extends State<CategoryPickerBottomSheet> {
                     return ListTile(
                       title: Text(category.titleEn),
                       onTap: () {
-                        widget.function('${category.titleEn}%${category.id}');
+                        widget.function(category.id);
                         Navigator.pop(context);
                       },
                     );

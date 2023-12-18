@@ -4,6 +4,7 @@ import 'package:alnoor/cubit/user_cubit.dart';
 import 'package:alnoor/models/banner_model.dart';
 import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
+import 'package:alnoor/views/screens/category_screen.dart';
 import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:alnoor/views/widgets/network_image.dart';
 import 'package:alnoor/views/widgets/product_tile.dart';
@@ -23,7 +24,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   CarouselController controller = CarouselController();
   TextEditingController search = TextEditingController();
-  String cat = '';
   List<CategoryModel> categories =
       staticData.categories.map((e) => CategoryModel.fromJson(e)).toList();
   int current = 0;
@@ -103,7 +103,7 @@ class _HomeState extends State<Home> {
                                               crossAxisCount: 2,
                                               crossAxisSpacing: 15,
                                               mainAxisSpacing: 15,
-                                              childAspectRatio: 0.65),
+                                              childAspectRatio: 0.7),
                                       itemCount: result.length,
                                       itemBuilder: (context, index) {
                                         ProductModel product =
@@ -267,9 +267,14 @@ class _HomeState extends State<Home> {
                                           if (index == 9) {
                                             userCubit.changeIndex(1);
                                           } else {
-                                            setState(() {
-                                              cat = c.id;
-                                            });
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CategoryScreen(
+                                                    category: c,
+                                                  ),
+                                                ));
                                           }
                                         },
                                         child: Column(
