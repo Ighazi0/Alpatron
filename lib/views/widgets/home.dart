@@ -2,7 +2,9 @@ import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/cubit/user_cubit.dart';
 import 'package:alnoor/models/banner_model.dart';
+import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
+import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:alnoor/views/widgets/network_image.dart';
 import 'package:alnoor/views/widgets/product_tile.dart';
 import 'package:alnoor/views/widgets/shimmer.dart';
@@ -21,6 +23,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   CarouselController controller = CarouselController();
   TextEditingController search = TextEditingController();
+  String cat = '';
+  List<CategoryModel> categories =
+      staticData.categories.map((e) => CategoryModel.fromJson(e)).toList();
   int current = 0;
   @override
   void initState() {
@@ -39,7 +44,7 @@ class _HomeState extends State<Home> {
           },
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -124,145 +129,296 @@ class _HomeState extends State<Home> {
                               },
                             ),
                           )
-                        : FutureBuilder(
-                            future: firestore.collection('banners').get(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List<BannerModel> data = snapshot.data!.docs
-                                    .map((doc) =>
-                                        BannerModel.fromJson(doc.data()))
-                                    .toList();
-                                if (data.isEmpty) {
-                                  return const SizedBox();
-                                }
-                                return Column(
-                                  children: [
-                                    CarouselSlider(
-                                      carouselController: controller,
+                        : Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: FutureBuilder(
+                                  future: firestore.collection('banners').get(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      List<BannerModel> data = snapshot
+                                          .data!.docs
+                                          .map((doc) =>
+                                              BannerModel.fromJson(doc.data()))
+                                          .toList();
+                                      if (data.isEmpty) {
+                                        return const SizedBox();
+                                      }
+                                      return Column(
+                                        children: [
+                                          CarouselSlider(
+                                            carouselController: controller,
+                                            options: CarouselOptions(
+                                                autoPlay: true,
+                                                height: 200,
+                                                viewportFraction: 1,
+                                                enlargeCenterPage: true,
+                                                autoPlayInterval:
+                                                    const Duration(
+                                                        seconds: 30)),
+                                            items: data.map((i) {
+                                              return Container(
+                                                width: dWidth,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10),
+                                                decoration: const BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10))),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                  child: NImage(
+                                                    url: i.url,
+                                                    h: 200,
+                                                    w: dWidth,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: data
+                                                .asMap()
+                                                .entries
+                                                .map((entry) {
+                                              return GestureDetector(
+                                                onTap: () => controller
+                                                    .animateToPage(entry.key),
+                                                child: Container(
+                                                  width: 8.0,
+                                                  height: 8.0,
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 4.0),
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: (primaryColor)
+                                                          .withOpacity(
+                                                              current ==
+                                                                      entry.key
+                                                                  ? 0.9
+                                                                  : 0.4)),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return CarouselSlider(
                                       options: CarouselOptions(
-                                          autoPlay: true,
-                                          height: 200,
-                                          viewportFraction: 1,
-                                          autoPlayInterval:
-                                              const Duration(seconds: 30)),
-                                      items: data.map((i) {
-                                        return Container(
-                                          width: dWidth,
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: NImage(
-                                            url: i.url,
-                                            h: 200,
-                                            w: dWidth,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children:
-                                          data.asMap().entries.map((entry) {
-                                        return GestureDetector(
-                                          onTap: () => controller
-                                              .animateToPage(entry.key),
+                                        height: 200,
+                                        enlargeCenterPage: true,
+                                      ),
+                                      items: [1, 2].map((i) {
+                                        return Shimmers(
                                           child: Container(
-                                            width: 8.0,
-                                            height: 8.0,
+                                            width: dWidth,
                                             margin: const EdgeInsets.symmetric(
-                                                horizontal: 4.0),
+                                                vertical: 10),
                                             decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: (primaryColor)
-                                                    .withOpacity(
-                                                        current == entry.key
-                                                            ? 0.9
-                                                            : 0.4)),
+                                                color: primaryColor,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(20))),
                                           ),
                                         );
                                       }).toList(),
-                                    ),
-                                  ],
-                                );
-                              }
-                              return CarouselSlider(
-                                options: CarouselOptions(
-                                  height: 200,
-                                  enlargeCenterPage: true,
+                                    );
+                                  },
                                 ),
-                                items: [1, 2].map((i) {
-                                  return Shimmers(
-                                    child: Container(
-                                      width: dWidth,
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      decoration: BoxDecoration(
-                                          color: primaryColor,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20))),
-                                    ),
-                                  );
-                                }).toList(),
-                              );
-                            },
+                              ),
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Categories',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                height: 80,
+                                width: dWidth,
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(
+                                    width: 15,
+                                  ),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 10,
+                                  itemBuilder: (context, index) {
+                                    CategoryModel c = categories[index];
+                                    return SizedBox(
+                                      width: 75,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (index == 9) {
+                                            userCubit.changeIndex(1);
+                                          } else {
+                                            setState(() {
+                                              cat = c.id;
+                                            });
+                                          }
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 60,
+                                              width: 60,
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 5),
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(100)),
+                                                border: Border.all(
+                                                    width: 0.25,
+                                                    color: primaryColor),
+                                              ),
+                                              child: index == 9
+                                                  ? const Icon(
+                                                      Icons.more_horiz_rounded)
+                                                  : Image.asset(
+                                                      'assets/icons/${c.id}.png',
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                            ),
+                                            Text(
+                                              index == 9
+                                                  ? 'See more'
+                                                  : c.titleEn,
+                                              overflow: TextOverflow.ellipsis,
+                                              style:
+                                                  const TextStyle(fontSize: 10),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: const Text(
+                                  'New arrivals',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 220,
+                                child: FutureBuilder(
+                                  future: firestore
+                                      .collection('products')
+                                      .orderBy('timestamp', descending: true)
+                                      .limit(50)
+                                      .get(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      List<ProductModel> data = snapshot
+                                          .data!.docs
+                                          .map((doc) =>
+                                              ProductModel.fromJson(doc.data()))
+                                          .toList();
+                                      if (data.isEmpty) {
+                                        return const SizedBox();
+                                      }
+                                      return ListView.separated(
+                                          separatorBuilder: (context, index) =>
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: data.length,
+                                          itemBuilder: (context, index) {
+                                            return ProductTile(
+                                                product: data[index]);
+                                          });
+                                    }
+                                    return ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: 6,
+                                        itemBuilder: (context, index) =>
+                                            Shimmers(
+                                                child: ProductTile(
+                                                    product: ProductModel(
+                                                        favorites: [],
+                                                        media: []))));
+                                  },
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: const Text(
+                                  'Bestsellers',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 220,
+                                child: FutureBuilder(
+                                  future: firestore
+                                      .collection('products')
+                                      .orderBy('seller')
+                                      .limit(50)
+                                      .get(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      List<ProductModel> data = snapshot
+                                          .data!.docs
+                                          .map((doc) =>
+                                              ProductModel.fromJson(doc.data()))
+                                          .toList();
+                                      if (data.isEmpty) {
+                                        return const SizedBox();
+                                      }
+                                      return ListView.separated(
+                                          separatorBuilder: (context, index) =>
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: data.length,
+                                          itemBuilder: (context, index) {
+                                            return ProductTile(
+                                                product: data[index]);
+                                          });
+                                    }
+                                    return ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: 6,
+                                        itemBuilder: (context, index) =>
+                                            Shimmers(
+                                                child: ProductTile(
+                                                    product: ProductModel(
+                                                        favorites: [],
+                                                        media: []))));
+                                  },
+                                ),
+                              )
+                            ],
                           ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: Text(
-                        'best'.tr(context),
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: FutureBuilder(
-                        future: firestore
-                            .collection('products')
-                            .orderBy('seller')
-                            .limit(50)
-                            .get(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<ProductModel> data = snapshot.data!.docs
-                                .map((doc) => ProductModel.fromJson(doc.data()))
-                                .toList();
-                            if (data.isEmpty) {
-                              return const SizedBox();
-                            }
-                            return GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 15,
-                                        mainAxisSpacing: 15,
-                                        childAspectRatio: 0.7),
-                                itemCount: data.length,
-                                itemBuilder: (context, index) {
-                                  return ProductTile(product: data[index]);
-                                });
-                          }
-                          return GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing: 15,
-                                      mainAxisSpacing: 15,
-                                      childAspectRatio: 0.7),
-                              itemCount: 6,
-                              itemBuilder: (context, index) => Shimmers(
-                                  child: ProductTile(
-                                      product: ProductModel(
-                                          favorites: [], media: []))));
-                        },
-                      ),
-                    )
                   ]),
             ),
           ),

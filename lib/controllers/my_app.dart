@@ -12,8 +12,6 @@ import 'package:alnoor/views/screens/admin_orders.dart';
 import 'package:alnoor/views/screens/admin_products.dart';
 import 'package:alnoor/views/screens/admin_reviews.dart';
 import 'package:alnoor/views/screens/admin_screen.dart';
-import 'package:alnoor/views/screens/cart_screen.dart';
-import 'package:alnoor/views/screens/categories_screen.dart';
 import 'package:alnoor/views/screens/checkout_screen.dart';
 import 'package:alnoor/views/screens/notification_screen.dart';
 import 'package:alnoor/views/screens/orders_screen.dart';
@@ -22,6 +20,7 @@ import 'package:alnoor/views/screens/register_screen.dart';
 import 'package:alnoor/views/screens/settings_screen.dart';
 import 'package:alnoor/views/screens/splash_screen.dart';
 import 'package:alnoor/views/screens/user_screen.dart';
+import 'package:alnoor/views/widgets/wish_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -108,8 +107,7 @@ class MyApp extends StatelessWidget {
               'user': (context) => const UserScreen(),
               'payment': (context) => const PaymentScreen(),
               'orders': (context) => const OrdersScreen(),
-              'categories': (context) => const CategoriesScreen(),
-              'cart': (context) => const CartScreen(),
+              'wish': (context) => const WishList(),
               'settings': (context) => const SettingsScreen(),
               'admin': (context) => const AdminScreen(),
               'adminOrders': (context) => const AdminOrders(),

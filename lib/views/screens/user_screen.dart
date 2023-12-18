@@ -1,10 +1,10 @@
 import 'package:alnoor/cubit/user_cubit.dart';
+import 'package:alnoor/views/screens/cart_screen.dart';
+import 'package:alnoor/views/screens/categories_screen.dart';
 import 'package:alnoor/views/screens/splash_screen.dart';
 import 'package:alnoor/views/widgets/home.dart';
 import 'package:alnoor/views/widgets/profile.dart';
-import 'package:alnoor/views/widgets/search.dart';
 import 'package:alnoor/views/widgets/user_bottom_bar.dart';
-import 'package:alnoor/views/widgets/wish_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,7 +37,7 @@ class _UserScreenState extends State<UserScreen> {
               actions: [
                 IconButton(
                     onPressed: () {
-                      // Navigator.pushNamed(context, 'categories');
+                      Navigator.pushNamed(context, 'wish');
                     },
                     icon: const Icon(
                       Icons.favorite_border,
@@ -45,7 +45,7 @@ class _UserScreenState extends State<UserScreen> {
                     )),
                 IconButton(
                     onPressed: () async {
-                      // Navigator.pushNamed(context, 'cart');
+                      Navigator.pushNamed(context, 'notification');
                     },
                     icon: const Icon(
                       Icons.notifications,
@@ -60,7 +60,12 @@ class _UserScreenState extends State<UserScreen> {
             body: SafeArea(
               child: IndexedStack(
                 index: userCubit.selectedIndex,
-                children: const [Home(), Search(), WishList(), Profile()],
+                children: const [
+                  Home(),
+                  CategoriesScreen(),
+                  CartScreen(),
+                  Profile()
+                ],
               ),
             ));
       },

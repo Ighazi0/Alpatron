@@ -1,6 +1,7 @@
 import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/cubit/user_cubit.dart';
 import 'package:alnoor/views/screens/user_screen.dart';
+import 'package:alnoor/views/widgets/icon_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,26 +29,37 @@ class _UserBottomBarState extends State<UserBottomBar> {
                     onTap: () {
                       userCubit.changeIndex(index);
                     },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Stack(
                       children: [
-                        const SizedBox(
-                          height: 10,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Icon(e.value,
+                                color: userCubit.selectedIndex == index
+                                    ? primaryColor
+                                    : Colors.black),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              e.key,
+                              style: TextStyle(
+                                  color: userCubit.selectedIndex == index
+                                      ? primaryColor
+                                      : Colors.black),
+                            )
+                          ],
                         ),
-                        Icon(e.value,
-                            color: userCubit.selectedIndex == index
-                                ? primaryColor
-                                : Colors.black),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          e.key,
-                          style: TextStyle(
-                              color: userCubit.selectedIndex == index
-                                  ? primaryColor
-                                  : Colors.black),
-                        )
+                        if (userCubit.cartList.isNotEmpty && index == 2)
+                          Positioned(
+                              top: 0,
+                              right: 0,
+                              child: BadgeIcon(
+                                  badgeText:
+                                      userCubit.cartList.length.toString()))
                       ],
                     ),
                   );
