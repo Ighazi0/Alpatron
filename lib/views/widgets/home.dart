@@ -75,8 +75,6 @@ class _HomeState extends State<Home> {
                                   if (result.isEmpty) {
                                     return Center(
                                       child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
                                             'assets/images/empty_data.png',

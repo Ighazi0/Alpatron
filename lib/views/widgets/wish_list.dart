@@ -2,6 +2,7 @@ import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/cubit/user_cubit.dart';
 import 'package:alnoor/models/product_model.dart';
+import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/product_tile.dart';
 import 'package:alnoor/views/widgets/shimmer.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _WishListState extends State<WishList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: const AppBarCustom(action: {}),
       body: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
           return Padding(

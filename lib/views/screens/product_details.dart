@@ -2,10 +2,10 @@ import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/cubit/user_cubit.dart';
 import 'package:alnoor/models/product_model.dart';
-import 'package:alnoor/views/screens/full_screen.dart';
 import 'package:alnoor/views/screens/user_screen.dart';
-import 'package:alnoor/views/widgets/counter.dart';
+import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,8 +18,8 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   bool favorite = false;
-  final PageController _pageController = PageController();
-  int _activePage = 0, count = 1;
+  CarouselController controller = CarouselController();
+  int current = 0, count = 1;
 
   @override
   void initState() {
@@ -33,234 +33,153 @@ class _ProductDetailsState extends State<ProductDetails> {
     return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
         return Scaffold(
-            appBar: AppBar(
-              leading: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                  onTap: () async {
-                    Navigator.pop(context);
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey.shade200,
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 20,
+            bottomNavigationBar: widget.product.stock == 0
+                ? SafeArea(
+                    child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.all(20),
+                    height: 60,
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Text(
+                      'out'.tr(context),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor),
                     ),
-                  ),
-                ),
-              ),
-              leadingWidth: 60,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey.shade200,
-                    child: InkWell(
-                      onTap: () async {
-                        staticFunctions.shareData(widget.product.link);
-                      },
-                      child: const Icon(
-                        Icons.reply,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey.shade200,
-                    child: StreamBuilder(
-                        stream: firestore
-                            .collection('products')
-                            .doc(widget.product.id)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            ProductModel product = ProductModel.fromJson(
-                                snapshot.data!.data() as Map);
-                            return IconButton(
-                              icon: Icon(
-                                product.favorites!
-                                        .contains(firebaseAuth.currentUser!.uid)
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: Colors.red,
-                                size: 18,
-                              ),
-                              onPressed: () async {
-                                await userCubit.favoriteStatus(product);
-                              },
-                            );
-                          }
-
-                          return IconButton(
-                            icon: Icon(
-                              widget.product.favorites!
-                                      .contains(firebaseAuth.currentUser!.uid)
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: Colors.red,
-                              size: 18,
-                            ),
-                            onPressed: () async {
-                              await userCubit.favoriteStatus(widget.product);
-                            },
-                          );
-                        }),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.white,
-            bottomNavigationBar: SafeArea(
-              child: Container(
-                height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 0.1,
-                      blurRadius: 0.1,
-                      offset: const Offset(0, -1),
-                    ),
-                  ],
-                ),
-                child: widget.product.stock == 0
-                    ? Align(
-                        child: Text(
-                          'out'.tr(context),
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: primaryColor,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ))
+                : null,
+            appBar: const AppBarCustom(action: {}),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
+                children: [
+                  Stack(
+                    children: [
+                      Column(
                         children: [
-                          Counter(
-                            remove: () {
-                              setState(() {
-                                count--;
-                              });
-                            },
-                            other: () {},
-                            add: () {
-                              if (count < widget.product.stock) {
-                                setState(() {
-                                  count++;
-                                });
-                              }
-                            },
-                            count: count,
+                          CarouselSlider(
+                            carouselController: controller,
+                            options: CarouselOptions(
+                                autoPlay: true,
+                                height: 200,
+                                viewportFraction: 1,
+                                enlargeCenterPage: true,
+                                autoPlayInterval: const Duration(seconds: 20)),
+                            items: widget.product.media!.map((i) {
+                              return Container(
+                                width: dWidth,
+                                margin: const EdgeInsets.only(bottom: 10),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  child: NImage(
+                                    url: i,
+                                    h: 200,
+                                    w: dWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                          MaterialButton(
-                            onPressed: () {
-                              userCubit.addToCart(widget.product, count);
-                              Navigator.pop(context);
-                            },
-                            color: primaryColor,
-                            minWidth: dWidth / 2,
-                            textColor: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100))),
-                            child: Text('addTo'.tr(context)),
-                          )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: widget.product.media!
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              return GestureDetector(
+                                onTap: () =>
+                                    controller.animateToPage(entry.key),
+                                child: Container(
+                                  width: 8.0,
+                                  height: 8.0,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 4.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: (primaryColor).withOpacity(
+                                          current == entry.key ? 0.9 : 0.4)),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ],
                       ),
-              ),
-            ),
-            body: ListView(
-              children: [
-                SizedBox(
-                  height: 250,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (int page) {
-                      setState(() {
-                        _activePage = page;
-                      });
-                    },
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.product.media!.length,
-                    itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FullScreen(
-                                    url: widget.product.media![index]),
-                              ));
-                        },
-                        child: NImage(
-                          url: widget.product.media![index],
-                          h: 250,
-                          fit: BoxFit.none,
-                          w: dWidth,
-                        )),
+                      Positioned(
+                        right: 0,
+                        child: StreamBuilder(
+                            stream: firestore
+                                .collection('products')
+                                .doc(widget.product.id)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                ProductModel product = ProductModel.fromJson(
+                                    snapshot.data!.data() as Map);
+                                return IconButton(
+                                  icon: Icon(
+                                    product.favorites!.contains(
+                                            firebaseAuth.currentUser!.uid)
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: Colors.red,
+                                    size: 18,
+                                  ),
+                                  onPressed: () async {
+                                    await userCubit.favoriteStatus(product);
+                                  },
+                                );
+                              }
+
+                              return IconButton(
+                                icon: Icon(
+                                  widget.product.favorites!.contains(
+                                          firebaseAuth.currentUser!.uid)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: Colors.red,
+                                  size: 18,
+                                ),
+                                onPressed: () async {
+                                  await userCubit
+                                      .favoriteStatus(widget.product);
+                                },
+                              );
+                            }),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List<Widget>.generate(
-                      widget.product.media!.length,
-                      (index) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: InkWell(
-                              onTap: () {
-                                _pageController.animateToPage(index,
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeIn);
-                              },
-                              child: CircleAvatar(
-                                radius: 4,
-                                backgroundColor: _activePage == index
-                                    ? primaryColor
-                                    : Colors.grey,
-                              ),
-                            ),
-                          )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          locale.locale == 'ar'
-                              ? widget.product.titleAr
-                              : widget.product.titleEn,
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.symmetric(vertical: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.red.shade100,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            locale.locale == 'ar'
+                                ? widget.product.titleAr
+                                : widget.product.titleEn,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Column(
                                 children: [
                                   Text(
                                     '${'AED'.tr(context)} ${widget.product.price.toStringAsFixed(2)}',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
                                         decoration: widget.product.discount == 0
                                             ? null
                                             : TextDecoration.lineThrough),
@@ -275,29 +194,74 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                   (widget.product.discount /
                                                       100)))
                                           .toStringAsFixed(2),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        if (widget.product.descriptionEn.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: Text(
-                              'description'.tr(context),
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
+                              const Spacer(),
+                              widget.product.stock == 0
+                                  ? const SizedBox()
+                                  : IconButton(
+                                      onPressed: () {
+                                        userCubit.addToCart(
+                                            widget.product, count);
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.add_shopping_cart,
+                                        color: primaryColor,
+                                      )),
+                              IconButton(
+                                  onPressed: () {
+                                    staticFunctions
+                                        .shareData(widget.product.link);
+                                  },
+                                  icon: Icon(
+                                    Icons.share,
+                                    color: primaryColor,
+                                  ))
+                            ],
                           ),
-                        if (widget.product.descriptionEn.isNotEmpty)
-                          Text(
-                            widget.product.descriptionEn,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                      ]),
-                )
-              ],
+                          if (widget.product.descriptionEn.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 10),
+                              child: Text(
+                                'description'.tr(context),
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          if (widget.product.descriptionEn.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Description',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryColor),
+                                  ),
+                                  const Divider(),
+                                  Text(
+                                    widget.product.descriptionEn,
+                                  ),
+                                ],
+                              ),
+                            )
+                        ]),
+                  )
+                ],
+              ),
             ));
       },
     );

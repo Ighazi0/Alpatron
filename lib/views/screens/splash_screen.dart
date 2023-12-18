@@ -1,4 +1,3 @@
-import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,21 +24,11 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            const Spacer(),
-            // Lottie.asset('assets/lotties/splash.json', repeat: false),
-            const Spacer(),
-            Text(
-              'believer'.tr(context),
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+        child: Center(
+            child: Image.asset(
+          'assets/images/brand.png',
+          height: 200,
+        )),
       ),
     );
   }
