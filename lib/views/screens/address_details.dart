@@ -111,7 +111,7 @@ class _AddressDetailsState extends State<AddressDetails> {
       appBar: AppBarCustom(
           title: widget.address.name,
           action: {
-            'title': widget.address.label.isEmpty ? 'add' : 'update',
+            'title': widget.address.label.isEmpty ? 'Add' : 'Update',
             'function': () {
               submit(false);
             },
@@ -132,7 +132,7 @@ class _AddressDetailsState extends State<AddressDetails> {
                   return null;
                 },
                 hint: 'My home',
-                title: 'addressName'),
+                title: 'Address name'),
             const SizedBox(
               height: 20,
             ),
@@ -146,7 +146,7 @@ class _AddressDetailsState extends State<AddressDetails> {
                   return null;
                 },
                 hint: '',
-                title: 'address'),
+                title: 'Address'),
             const SizedBox(
               height: 20,
             ),
@@ -161,7 +161,7 @@ class _AddressDetailsState extends State<AddressDetails> {
                   return null;
                 },
                 hint: '009',
-                title: 'phone'),
+                title: 'Phone'),
             const SizedBox(
               height: 20,
             ),

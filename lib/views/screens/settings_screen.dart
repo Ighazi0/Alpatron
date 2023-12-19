@@ -25,23 +25,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Column(
         children: [
-          if (auth.userData.uid.isNotEmpty)
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                return SwitchListTile(
-                  value: auth.notification,
-                  activeColor: primaryColor,
-                  title: Text(
-                    'notifications'.tr(context),
-                  ),
-                  onChanged: (value) {
-                    HapticFeedback.lightImpact();
-                    auth.changeNotification(value);
-                  },
-                  secondary: const Icon(Icons.notifications),
-                );
-              },
-            ),
+          BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              return SwitchListTile(
+                value: auth.notification,
+                activeColor: primaryColor,
+                title: Text(
+                  'notifications'.tr(context),
+                ),
+                onChanged: (value) {
+                  HapticFeedback.lightImpact();
+                  auth.changeNotification(value);
+                },
+                secondary: const Icon(Icons.notifications),
+              );
+            },
+          ),
           // if (auth.userData.uid.isNotEmpty)
           //   if (firebaseAuth.currentUser?.providerData.first.providerId ==
           //       'password')
@@ -62,34 +61,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
           //       onTap: () {},
           //       leading: const Icon(Icons.password),
           //     ),
+          // ListTile(
+          //   title: Text(
+          //     'changeLang'.tr(context),
+          //   ),
+          //   onTap: () {
+          //     if (locale.locale == 'ar') {
+          //       locale.changeLanguage('en');
+          //     } else {
+          //       locale.changeLanguage('ar');
+          //     }
+          //   },
+          //   leading: const Icon(Icons.language),
+          // ),
+
           ListTile(
             title: Text(
-              'changeLang'.tr(context),
+              'deleteAccount'.tr(context),
+              style: const TextStyle(color: Colors.red),
             ),
             onTap: () {
-              if (locale.locale == 'ar') {
-                locale.changeLanguage('en');
-              } else {
-                locale.changeLanguage('ar');
-              }
+              staticWidgets.showBottom(
+                  context, const BottomSheetDeleteAccount(), 0.4, 0.5);
             },
-            leading: const Icon(Icons.language),
-          ),
-          if (auth.userData.uid.isNotEmpty)
-            ListTile(
-              title: Text(
-                'deleteAccount'.tr(context),
-                style: const TextStyle(color: Colors.red),
-              ),
-              onTap: () {
-                staticWidgets.showBottom(
-                    context, const BottomSheetDeleteAccount(), 0.4, 0.5);
-              },
-              leading: const Icon(
-                Icons.person_remove,
-                color: Colors.red,
-              ),
+            leading: const Icon(
+              Icons.person_remove,
+              color: Colors.red,
             ),
+          ),
         ],
       ),
     );

@@ -73,18 +73,18 @@ class AuthCubit extends Cubit<AuthState> {
   checkUser() async {
     if (firebaseAuth.currentUser != null) {
       if (firebaseAuth.currentUser!.uid == staticData.adminUID) {
-        await Future.delayed(const Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 2));
       } else {
         final stopwatch = Stopwatch()..start();
         await getUserData();
         stopwatch.stop();
-        if (stopwatch.elapsed.inSeconds < 3) {
+        if (stopwatch.elapsed.inSeconds < 2) {
           await Future.delayed(
-              Duration(seconds: 3 - stopwatch.elapsed.inSeconds));
+              Duration(seconds: 2 - stopwatch.elapsed.inSeconds));
         }
       }
     } else {
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 2));
     }
     navigator();
   }
@@ -114,12 +114,10 @@ class AuthCubit extends Cubit<AuthState> {
     if (firebaseAuth.currentUser?.uid == staticData.adminUID) {
       navigatorKey.currentState?.pushReplacementNamed('admin');
     } else {
-      if (userData.uid.isEmpty) {
-        navigatorKey.currentState?.pushReplacementNamed('register');
-      } else {
+      if (firebaseAuth.currentUser != null) {
         requestPermission();
-        navigatorKey.currentState?.pushReplacementNamed('user');
       }
+      navigatorKey.currentState?.pushReplacementNamed('user');
     }
   }
 

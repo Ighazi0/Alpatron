@@ -5,7 +5,6 @@ import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/screens/product_details.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/bottom_sheet_status.dart';
-import 'package:alnoor/views/widgets/review_bottom_sheet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -56,134 +55,118 @@ class _OrderDetailsState extends State<OrderDetails> {
             : {},
         title: '',
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-            height: 140,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey))),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${'subtotal'.tr(context)}:'),
-                    Text(
-                      '${'AED'.tr(context)} ${order.total.toStringAsFixed(2)}',
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${'deliveryFee'.tr(context)}:'),
-                    Text(
-                      '${'AED'.tr(context)} ${order.delivery}',
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                const Divider(
-                  color: Colors.grey,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${'total'.tr(context)}:'),
-                    Text(
-                      '${'AED'.tr(context)} ${(order.total + order.delivery).toStringAsFixed(2)}',
-                    ),
-                  ],
-                ),
-              ],
-            )),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(
-          top: 15,
-          left: 15,
-          right: 15,
-        ),
-        child: RefreshIndicator(
-          color: primaryColor,
-          onRefresh: () async {
-            fetch();
-          },
-          child: ListView(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'orderNumber'.tr(context),
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  order.number.toString(),
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'name'.tr(context),
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  order.name,
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
-            ),
-            const Divider(
-              color: Colors.grey,
-            ),
-            Text(
-              'shipping'.tr(context),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(order.addressData!.address),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(order.addressData!.phone),
-            const Divider(
-              color: Colors.grey,
-            ),
-            Text(
-              order.status.tr(context),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              DateFormat('EE, dd/MM/yyyy hh:mm a', locale.locale)
-                  .format(order.timestamp!),
-            ),
-            const Divider(
-              color: Colors.grey,
-            ),
-            SizedBox(
-              height: 100,
-              width: dWidth,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: RefreshIndicator(
+            color: primaryColor,
+            onRefresh: () async {
+              fetch();
+            },
+            child: ListView(children: [
+              Container(
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 0.5,
+                        blurRadius: 0.5,
+                      ),
+                    ],
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Order id:' ' ${order.number.toString()}',
+                        style: const TextStyle(),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Order date:'
+                        ' ${DateFormat('dd/MM/yyyy', locale.locale).format(order.timestamp!)}',
+                        style: const TextStyle(),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Order details:'
+                        ' ${order.orderList!.length} items',
+                        style: const TextStyle(),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Order status:'
+                        ' ${order.status.tr(context)}s',
+                        style: const TextStyle(),
+                      ),
+                    ]),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 0.5,
+                        blurRadius: 0.5,
+                      ),
+                    ],
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${'name'.tr(context)}:' ' ${order.name}',
+                        style: const TextStyle(),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Deliver to:'
+                        ' ${order.addressData!.address}',
+                        style: const TextStyle(),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(order.addressData!.phone),
+                    ]),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 0.5,
+                        blurRadius: 0.5,
+                      ),
+                    ],
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10))),
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${'total'.tr(context)}: '
+                          '${'AED'.tr(context)} ${(order.total + order.delivery).toStringAsFixed(2)}'),
+                    ]),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: order.orderList!.length,
                 itemBuilder: (context, index) {
                   ProductModel orderList = order.orderList![index];
@@ -233,29 +216,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                   );
                 },
               ),
-            ),
-            if (!order.rated &&
-                order.status == 'complete' &&
-                firebaseAuth.currentUser!.uid != staticData.adminUID)
-              MaterialButton(
-                onPressed: () async {
-                  await staticWidgets.showBottom(
-                      context,
-                      BottomSheetReview(
-                        id: order.timestamp!.millisecondsSinceEpoch.toString(),
-                      ),
-                      0.5,
-                      0.75);
-                  fetch();
-                },
-                color: primaryColor,
-                height: 45,
-                textColor: Colors.white,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25))),
-                child: Text('reviewOrder'.tr(context)),
-              )
-          ]),
+            ]),
+          ),
         ),
       ),
     );

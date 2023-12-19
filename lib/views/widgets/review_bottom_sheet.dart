@@ -96,7 +96,7 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
                             ? Icons.star_half
                             : Icons.star_border),
                     size: 40,
-                    color: Colors.red,
+                    color: primaryColor,
                   ),
                 );
               }),
