@@ -44,11 +44,9 @@ class _BannnerDetailsState extends State<BannnerDetails> {
 
     if (widget.banner.id.isEmpty) {
       if (imageFile.isNotEmpty) {
-        final link = await staticFunctions.generateLink(id, 'banner');
         await firestore.collection('banners').doc(id).set({
           'id': id,
           'timestamp': DateTime.now().toIso8601String(),
-          'link': link,
           'titleAr': ar.text,
           'titleEn': en.text,
           'url': url.isEmpty ? widget.banner.url : url

@@ -52,15 +52,12 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
     }
 
     if (widget.product.id.isEmpty) {
-      final link = await staticFunctions.generateLink(
-          id.millisecondsSinceEpoch.toString(), 'product');
       await firestore
           .collection('products')
           .doc(id.millisecondsSinceEpoch.toString())
           .set({
         'id': id,
         'timestamp': id,
-        'link': link,
         'titleAr': tar.text,
         'titleEn': ten.text,
         'descriptionAr': dar.text,

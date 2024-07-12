@@ -43,8 +43,7 @@ class _AdminProductsState extends State<AdminProducts> {
         for (int i = 1; i < csvData.length; i++) {
           var data = csvData[i].join(', ');
           var id = DateTime.now();
-          final link = await staticFunctions.generateLink(
-              id.millisecondsSinceEpoch.toString(), 'product');
+
           try {
             await firestore
                 .collection('products')
@@ -52,7 +51,6 @@ class _AdminProductsState extends State<AdminProducts> {
                 .set({
               'id': id.millisecondsSinceEpoch.toString(),
               'timestamp': id.toIso8601String(),
-              'link': link,
               'titleEn': data.split(',')[0].trim(),
               'titleAr': data.split(',')[1].trim(),
               'price': double.parse(data.split(',')[2].trim()),

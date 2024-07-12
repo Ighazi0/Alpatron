@@ -28,6 +28,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/route_manager.dart';
 
 LocaleCubit locale = LocaleCubit();
 
@@ -73,7 +74,7 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<LocaleCubit, ChangeLocaleState>(
         builder: (context, state) {
           locale = BlocProvider.of<LocaleCubit>(context);
-          return MaterialApp(
+          return GetMaterialApp(
             locale: state.locale,
             navigatorKey: navigatorKey,
             scaffoldMessengerKey: snackbarKey,

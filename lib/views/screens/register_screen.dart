@@ -123,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     signIn
                         ? TextButton(
                             style: ButtonStyle(
-                                overlayColor: MaterialStateProperty.all(
+                                overlayColor: WidgetStateProperty.all(
                                     Colors.amber.shade50)),
                             onPressed: () {
                               staticWidgets.showBottom(
@@ -170,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             auth.changeStatus();
                           },
                           style: ButtonStyle(
-                              overlayColor: MaterialStateProperty.all(
+                              overlayColor: WidgetStateProperty.all(
                                   Colors.amber.shade50)),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 500),

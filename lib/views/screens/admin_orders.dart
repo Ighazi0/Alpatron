@@ -203,7 +203,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                                   order.status == 'inProgress'
                                       ? Icons.update
                                       : order.status == 'cancel'
-                                          ? Iconsax.box_remove
+                                          ? Iconsax.box_remove_bold
                                           : order.status == 'inDelivery'
                                               ? Icons.delivery_dining_sharp
                                               : Bootstrap.box2_fill,

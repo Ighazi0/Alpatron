@@ -38,7 +38,7 @@ class StaticData {
   }
 
   List<Map> bottomBar = [
-    {'home': Iconsax.home_2},
+    {'home': Iconsax.home_1_bold},
     {'categories': Icons.category},
     {'cart': Icons.shopping_cart},
     {'profile': Icons.person_outline_outlined},

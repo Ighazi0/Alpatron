@@ -143,12 +143,6 @@ class AuthCubit extends Cubit<AuthState> {
       'gender': '',
     };
 
-    var link = await staticFunctions.generateLink(
-        firebaseAuth.currentUser!.uid, 'profile');
-    data.update(
-      'link',
-      (v) => link,
-    );
     firestore.collection('users').doc(firebaseAuth.currentUser!.uid).set(data);
     userData = UserModel.fromJson(data);
   }
