@@ -1,4 +1,4 @@
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:flutter/material.dart';
 
 class Counter extends StatelessWidget {
@@ -33,7 +33,7 @@ class Counter extends StatelessWidget {
               margin: const EdgeInsets.only(right: 10),
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                  color: primaryColor,
+                  color: appConstant.primaryColor,
                   borderRadius: const BorderRadius.all(Radius.circular(100))),
               child: const Icon(
                 Icons.remove,
@@ -54,7 +54,7 @@ class Counter extends StatelessWidget {
               margin: const EdgeInsets.only(left: 10),
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                  color: primaryColor,
+                  color: appConstant.primaryColor,
                   borderRadius: const BorderRadius.all(Radius.circular(100))),
               child: const Icon(
                 Icons.add,

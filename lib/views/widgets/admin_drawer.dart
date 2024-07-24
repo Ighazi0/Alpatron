@@ -1,5 +1,6 @@
-import 'package:alnoor/views/screens/splash_screen.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AdminDrawer extends StatelessWidget {
   const AdminDrawer({super.key});
@@ -40,7 +41,7 @@ class AdminDrawer extends StatelessWidget {
             style: TextStyle(color: Colors.red),
           ),
           onTap: () {
-            auth.logOut();
+            Get.find<AuthController>().logOut();
           },
         ),
       ],

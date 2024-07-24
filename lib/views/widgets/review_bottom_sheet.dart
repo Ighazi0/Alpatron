@@ -1,10 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
-import 'package:alnoor/controllers/app_localization.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/views/widgets/edit_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class BottomSheetReview extends StatefulWidget {
   const BottomSheetReview({super.key, this.id = ''});
@@ -20,7 +20,7 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
   TextEditingController message = TextEditingController();
 
   submit() async {
-    FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus(); //
 
     setState(() {
       loading = true;
@@ -32,7 +32,7 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
         .set({
       'id': id.millisecondsSinceEpoch.toString(),
       'timestamp': id.toIso8601String(),
-      'name': auth.userData.name,
+      'name': Get.find<AuthController>().userData.name,
       'orderId': widget.id,
       'rate': _rating,
       'message': message.text,
@@ -41,8 +41,8 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
     await firestore.collection('orders').doc(widget.id).update({
       'rated': true,
     });
-    Navigator.of(context).pop();
-    Fluttertoast.showToast(msg: 'reviewSent'.tr(context));
+    Get.back();
+    Fluttertoast.showToast(msg: 'reviewSent'.tr);
   }
 
   @override
@@ -55,7 +55,7 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
         ),
         Center(
           child: Text(
-            'reviewOrder'.tr(context),
+            'reviewOrder'.tr,
             style: const TextStyle(fontSize: 25),
           ),
         ),
@@ -96,7 +96,7 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
                             ? Icons.star_half
                             : Icons.star_border),
                     size: 40,
-                    color: primaryColor,
+                    color: appConstant.primaryColor,
                   ),
                 );
               }),
@@ -106,7 +106,7 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
         Padding(
           padding: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
           child: EditText(
-              hint: 'veryGood'.tr(context),
+              hint: 'veryGood'.tr,
               function: submit,
               controller: message,
               validator: (value) => '',
@@ -123,9 +123,9 @@ class _BottomSheetReviewState extends State<BottomSheetReview> {
                   },
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25))),
-                  color: primaryColor,
+                  color: appConstant.primaryColor,
                   child: Text(
-                    'submit'.tr(context),
+                    'submit'.tr,
                     style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),

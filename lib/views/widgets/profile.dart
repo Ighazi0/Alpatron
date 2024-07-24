@@ -1,7 +1,8 @@
-import 'package:alnoor/controllers/app_localization.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 class Profile extends StatelessWidget {
@@ -11,85 +12,85 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (auth.userData.uid.isNotEmpty)
+        if (Get.find<AuthController>().userData.uid.isNotEmpty)
           ListTile(
             tileColor: Colors.white,
             title: Text(
-              'myOrders'.tr(context),
+              'myOrders'.tr,
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
             onTap: () {
               Navigator.pushNamed(context, 'orders');
             },
             leading: Icon(
               Icons.shopping_bag,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
           ),
         const SizedBox(
           height: 10,
         ),
-        if (auth.userData.uid.isNotEmpty)
+        if (Get.find<AuthController>().userData.uid.isNotEmpty)
           ListTile(
             tileColor: Colors.white,
             title: Text(
-              'manageAdd'.tr(context),
+              'manageAdd'.tr,
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
             onTap: () {
               Navigator.pushNamed(context, 'address');
             },
             leading: Icon(
               Icons.location_on,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
           ),
         const SizedBox(
           height: 10,
         ),
-        if (auth.userData.uid.isNotEmpty)
+        if (Get.find<AuthController>().userData.uid.isNotEmpty)
           ListTile(
             tileColor: Colors.white,
             title: Text(
-              'paymentMethod'.tr(context),
+              'paymentMethod'.tr,
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
             onTap: () {
               Navigator.pushNamed(context, 'payment');
             },
             leading: Icon(
               Icons.wallet_sharp,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
           ),
         const SizedBox(
           height: 10,
         ),
-        if (auth.userData.uid.isNotEmpty)
+        if (Get.find<AuthController>().userData.uid.isNotEmpty)
           ListTile(
             tileColor: Colors.white,
             title: Text(
-              'settings'.tr(context),
+              'settings'.tr,
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
             onTap: () {
               Navigator.pushNamed(context, 'settings');
             },
             leading: Icon(
               Icons.settings,
-              color: primaryColor,
+              color: appConstant.primaryColor,
             ),
           ),
         const SizedBox(
@@ -98,18 +99,18 @@ class Profile extends StatelessWidget {
         ListTile(
           tileColor: Colors.white,
           title: Text(
-            'contactUs'.tr(context),
+            'contactUs'.tr,
           ),
           onTap: () {
             staticFunctions.urlLauncher(Uri.parse('tel:+1234567890'));
           },
           trailing: Icon(
             Icons.arrow_forward_ios,
-            color: primaryColor,
+            color: appConstant.primaryColor,
           ),
           leading: Icon(
             Icons.call,
-            color: primaryColor,
+            color: appConstant.primaryColor,
           ),
         ),
         const Spacer(),
@@ -119,14 +120,14 @@ class Profile extends StatelessWidget {
           color: Colors.white,
           textColor: Colors.red,
           onPressed: () {
-            auth.logOut();
+            Get.find<AuthController>().logOut();
           },
           child: SizedBox(
             width: 100,
             child: Row(
               children: [
                 Icon(
-                  auth.userData.uid.isNotEmpty
+                  Get.find<AuthController>().userData.uid.isNotEmpty
                       ? EvaIcons.log_out
                       : EvaIcons.log_in,
                   color: Colors.red,
@@ -134,9 +135,9 @@ class Profile extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                Text(auth.userData.uid.isNotEmpty
-                    ? 'logOut'.tr(context)
-                    : 'signIn'.tr(context)),
+                Text(Get.find<AuthController>().userData.uid.isNotEmpty
+                    ? 'logOut'.tr
+                    : 'signIn'.tr),
               ],
             ),
           ),

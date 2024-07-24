@@ -1,11 +1,11 @@
-import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/order_model.dart';
 import 'package:alnoor/views/screens/order_details.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/review_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -21,10 +21,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       appBar: AppBarCustom(
         action: const {},
-        title: 'myOrders'.tr(context),
+        title: 'myOrders'.tr,
       ),
       body: RefreshIndicator(
-        color: primaryColor,
+        color: appConstant.primaryColor,
         onRefresh: () async {
           setState(() {});
         },
@@ -49,7 +49,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         height: 10,
                       ),
                       Text(
-                        'noOrders'.tr(context),
+                        'noOrders'.tr,
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       )
                     ],
@@ -81,25 +81,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                      '${'orderNo'.tr(context)}. ${order.number}'),
+                                  Text('${'orderNo'.tr}. ${order.number}'),
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  Text(
-                                      '${'Order status'}: ${order.status.tr(context)}'),
+                                  Text('${'Order status'}: ${order.status.tr}'),
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  Text(DateFormat(
-                                          'dd/MM/yyyy hh:mm a', locale.locale)
+                                  Text(DateFormat('dd/MM/yyyy hh:mm a',
+                                          Get.locale!.languageCode)
                                       .format(order.timestamp!))
                                 ],
                               ),
                               if (!order.rated &&
                                   order.status == 'complete' &&
                                   firebaseAuth.currentUser!.uid !=
-                                      staticData.adminUID)
+                                      appConstant.adminUid)
                                 IconButton(
                                     onPressed: () async {
                                       await staticWidgets.showBottom(

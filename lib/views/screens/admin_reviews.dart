@@ -1,8 +1,9 @@
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/review_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/rating_stars.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AdminReviews extends StatefulWidget {
   const AdminReviews({super.key});
@@ -55,7 +56,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                         },
                         child: Text(
                           'All',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -64,7 +65,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                         },
                         child: Text(
                           '5 stars',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -73,7 +74,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                         },
                         child: Text(
                           '4 stars',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -82,7 +83,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                         },
                         child: Text(
                           '3 stars',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -91,7 +92,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                         },
                         child: Text(
                           '2 stars',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -100,7 +101,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                         },
                         child: Text(
                           '1 stars',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                     ],
@@ -112,7 +113,7 @@ class _AdminReviewsState extends State<AdminReviews> {
         },
       ),
       body: RefreshIndicator(
-          color: primaryColor,
+          color: appConstant.primaryColor,
           onRefresh: () async {
             setState(() {});
           },
@@ -145,7 +146,7 @@ class _AdminReviewsState extends State<AdminReviews> {
                     children: [
                       SizedBox(
                         height: 115,
-                        width: dWidth,
+                        width: Get.width,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

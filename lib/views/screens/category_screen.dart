@@ -1,11 +1,11 @@
-import 'package:alnoor/controllers/app_localization.dart';
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/product_tile.dart';
 import 'package:alnoor/views/widgets/shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key, required this.category});
@@ -55,7 +55,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 height: 10,
                               ),
                               Text(
-                                'noProducts'.tr(context),
+                                'noProducts'.tr,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w500),
                               ),

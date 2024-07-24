@@ -1,26 +1,13 @@
-import 'package:alnoor/cubit/auth_cubit.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-AuthCubit auth = AuthCubit();
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    auth = BlocProvider.of<AuthCubit>(context);
-    auth.checkUser();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Get.find<AuthController>().checkUser();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

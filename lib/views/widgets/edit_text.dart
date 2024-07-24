@@ -1,4 +1,4 @@
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:flutter/material.dart';
 
 class EditText extends StatefulWidget {
@@ -42,7 +42,7 @@ class _EditTextState extends State<EditText> {
           child: TextFormField(
               keyboardType: widget.number ? TextInputType.number : null,
               obscureText: !showPass && widget.secure,
-              cursorColor: primaryColor,
+              cursorColor: appConstant.primaryColor,
               onFieldSubmitted: (value) => widget.function(),
               decoration: InputDecoration(
                   hintText: widget.hint,
@@ -55,7 +55,7 @@ class _EditTextState extends State<EditText> {
                           },
                           icon: Icon(
                             showPass ? Icons.visibility : Icons.visibility_off,
-                            color: primaryColor,
+                            color: appConstant.primaryColor,
                           ))
                       : null,
                   enabledBorder: const OutlineInputBorder(

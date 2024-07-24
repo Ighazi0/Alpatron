@@ -15,8 +15,8 @@ import 'package:firebase_storage_web/firebase_storage_web.dart';
 import 'package:flutter_credit_card/src/plugin/flutter_credit_card_web.dart';
 import 'package:fluttertoast/fluttertoast_web.dart';
 import 'package:share_plus/src/share_plus_web.dart';
-import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:url_launcher_web/url_launcher_web.dart';
+import 'package:webview_flutter_web/webview_flutter_web.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void registerPlugins([final Registrar? pluginRegistrar]) {
@@ -30,7 +30,7 @@ void registerPlugins([final Registrar? pluginRegistrar]) {
   FlutterCreditCardWeb.registerWith(registrar);
   FluttertoastWebPlugin.registerWith(registrar);
   SharePlusWebPlugin.registerWith(registrar);
-  SharedPreferencesPlugin.registerWith(registrar);
   UrlLauncherPlugin.registerWith(registrar);
+  WebWebViewPlatform.registerWith(registrar);
   registrar.registerMessageHandler();
 }

@@ -1,12 +1,11 @@
-import 'package:alnoor/controllers/app_localization.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/cubit/auth_cubit.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/delete_account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -25,13 +24,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Column(
         children: [
-          BlocBuilder<AuthCubit, AuthState>(
-            builder: (context, state) {
+          GetBuilder(
+            init: AuthController(),
+            builder: (auth) {
               return SwitchListTile(
                 value: auth.notification,
-                activeColor: primaryColor,
+                activeColor: appConstant.primaryColor,
                 title: Text(
-                  'notifications'.tr(context),
+                  'notifications'.tr,
                 ),
                 onChanged: (value) {
                   HapticFeedback.lightImpact();
@@ -77,7 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           ListTile(
             title: Text(
-              'deleteAccount'.tr(context),
+              'deleteAccount'.tr,
               style: const TextStyle(color: Colors.red),
             ),
             onTap: () {

@@ -1,47 +1,39 @@
-import 'package:alnoor/controllers/app_localization.dart';
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/controllers/user_controller.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/user_model.dart';
-import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-part 'auth_state.dart';
+import 'package:get/get.dart';
 
-class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
-
+class AuthController extends GetxController {
   GlobalKey<FormState> key = GlobalKey();
 
   TextEditingController email = TextEditingController(),
       password = TextEditingController(),
       name = TextEditingController();
   UserModel userData = UserModel();
-  bool agree = false, notification = false, signIn = true;
+  bool agree = false, notification = false, signIn = true, loading = false;
 
   changeStatus() {
     signIn = !signIn;
-    emit(AuthInitial());
+    update();
   }
 
   changeNotification(x) async {
-    final prefs = await SharedPreferences.getInstance();
     notification = x;
-    prefs.setBool('notification', x);
+    getStorage.write('notification', x);
     if (x) {
       requestPermission();
     } else {
       firebaseMessaging.deleteToken();
     }
-    emit(AuthInitial());
+    update();
   }
 
   requestPermission() async {
-    SharedPreferences.getInstance().then((value) {
-      notification = value.getBool('notification') ?? true;
-    });
+    notification = getStorage.read('notification') ?? true;
     await firebaseMessaging.requestPermission(
         alert: true, badge: true, sound: true);
 
@@ -59,20 +51,20 @@ class AuthCubit extends Cubit<AuthState> {
 
   agreeTerm() {
     agree = !agree;
-    emit(AuthInitial());
+    update();
   }
 
   logOut() async {
-    userCubit.selectedIndex = 0;
+    Get.find<UserController>().selectedIndex = 0;
 
     userData = UserModel();
     await firebaseAuth.signOut();
-    navigatorKey.currentState?.pushReplacementNamed('register');
+    Get.offNamed('register');
   }
 
   checkUser() async {
     if (firebaseAuth.currentUser != null) {
-      if (firebaseAuth.currentUser!.uid == staticData.adminUID) {
+      if (firebaseAuth.currentUser!.uid == appConstant.adminUid) {
         await Future.delayed(const Duration(seconds: 2));
       } else {
         final stopwatch = Stopwatch()..start();
@@ -90,7 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   getUserData() async {
-    if (firebaseAuth.currentUser!.uid != staticData.adminUID) {
+    if (firebaseAuth.currentUser!.uid != appConstant.adminUid) {
       try {
         await firestore
             .collection('users')
@@ -111,13 +103,13 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   navigator() async {
-    if (firebaseAuth.currentUser?.uid == staticData.adminUID) {
-      navigatorKey.currentState?.pushReplacementNamed('admin');
+    if (firebaseAuth.currentUser?.uid == appConstant.adminUid) {
+      Get.offNamed('admin');
     } else {
       if (firebaseAuth.currentUser != null) {
         requestPermission();
       }
-      navigatorKey.currentState?.pushReplacementNamed('user');
+      Get.offNamed('user');
     }
   }
 
@@ -147,11 +139,12 @@ class AuthCubit extends Cubit<AuthState> {
     userData = UserModel.fromJson(data);
   }
 
-  auth(context) async {
+  auth() async {
     if (!key.currentState!.validate()) {
       return;
     }
-    emit(LoadingState());
+    loading = true;
+    update();
     try {
       if (signIn) {
         await signInAuth();
@@ -163,11 +156,12 @@ class AuthCubit extends Cubit<AuthState> {
       password.clear();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        Fluttertoast.showToast(msg: e.code.tr(context));
+        Fluttertoast.showToast(msg: e.code.tr);
       }
-      Fluttertoast.showToast(msg: 'invalidCredentials'.tr(context));
+      Fluttertoast.showToast(msg: 'invalidCredentials'.tr);
     }
-    emit(AuthInitial());
+    loading = false;
+    update();
   }
 
   Future<void> signUp() async {
@@ -180,18 +174,8 @@ class AuthCubit extends Cubit<AuthState> {
       name.clear();
       password.clear();
     } else {
-      snackbarKey.currentState?.showSnackBar(const SnackBar(
-        width: 300,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        content: Center(
-            child: Text(
-          'Please read the Terms & Conditions and agree with it',
-          style: TextStyle(fontSize: 18),
-        )),
-        behavior: SnackBarBehavior.floating,
-      ));
+      Fluttertoast.showToast(
+          msg: 'Please read the Terms & Conditions and agree with it');
     }
   }
 

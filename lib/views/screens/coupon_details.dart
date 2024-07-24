@@ -1,10 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/coupon_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/edit_text.dart';
 import 'package:alnoor/views/widgets/pick_date.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CouponDetails extends StatefulWidget {
   const CouponDetails({super.key, required this.coupon});
@@ -61,7 +61,7 @@ class _CouponDetailsState extends State<CouponDetails> {
       });
     }
 
-    Navigator.pop(context);
+    Get.back();
   }
 
   @override
@@ -216,7 +216,7 @@ class _CouponDetailsState extends State<CouponDetails> {
                             .collection('coupons')
                             .doc(widget.coupon.id)
                             .delete();
-                        Navigator.pop(context);
+                        Get.back();
                       },
                       icon: const Icon(
                         Icons.delete,

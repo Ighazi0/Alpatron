@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/screens/admin_product_details.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
@@ -82,7 +82,7 @@ class _AdminProductsState extends State<AdminProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
+        backgroundColor: appConstant.primaryColor,
         onPressed: () {
           importExcel();
         },

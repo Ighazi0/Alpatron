@@ -1,12 +1,11 @@
-import 'package:alnoor/controllers/app_localization.dart';
-import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/cubit/user_cubit.dart';
+import 'package:alnoor/controllers/user_controller.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/product_tile.dart';
 import 'package:alnoor/views/widgets/shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class WishList extends StatefulWidget {
   const WishList({super.key});
@@ -20,12 +19,13 @@ class _WishListState extends State<WishList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarCustom(action: {}),
-      body: BlocBuilder<UserCubit, UserState>(
-        builder: (context, state) {
+      body: GetBuilder(
+        init: UserController(),
+        builder: (userCubit) {
           return Padding(
             padding: const EdgeInsets.only(left: 15, right: 15, top: 20),
             child: RefreshIndicator(
-              color: primaryColor,
+              color: appConstant.primaryColor,
               onRefresh: () async {
                 setState(() {});
               },
@@ -52,7 +52,7 @@ class _WishListState extends State<WishList> {
                               height: 10,
                             ),
                             Text(
-                              'noFavorites'.tr(context),
+                              'noFavorites'.tr,
                               style:
                                   const TextStyle(fontWeight: FontWeight.w500),
                             )

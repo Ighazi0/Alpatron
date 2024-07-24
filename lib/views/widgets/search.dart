@@ -1,10 +1,10 @@
-import 'package:alnoor/controllers/app_localization.dart';
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/screens/product_details.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -53,11 +53,11 @@ class _SearchState extends State<Search> {
                             const SizedBox(
                               height: 20,
                             ),
-                            Text('noProducts'.tr(context))
+                            Text('noProducts'.tr)
                           ],
                         )
                       : RefreshIndicator(
-                          color: primaryColor,
+                          color: appConstant.primaryColor,
                           onRefresh: () async {
                             setState(() {});
                           },

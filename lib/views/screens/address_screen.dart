@@ -1,10 +1,10 @@
-import 'package:alnoor/controllers/app_localization.dart';
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/user_model.dart';
 import 'package:alnoor/views/screens/address_details.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
@@ -18,7 +18,7 @@ class _AddressScreenState extends State<AddressScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarCustom(
-        title: 'address'.tr(context),
+        title: 'address'.tr,
         action: {
           'title': 'Add',
           'function': () async {
@@ -26,7 +26,7 @@ class _AddressScreenState extends State<AddressScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddressDetails(
-                    address: AddressModel(name: 'newAddress'.tr(context)),
+                    address: AddressModel(name: 'newAddress'.tr),
                     index: 0,
                   ),
                 ));
@@ -35,12 +35,12 @@ class _AddressScreenState extends State<AddressScreen> {
         },
       ),
       body: RefreshIndicator(
-        color: primaryColor,
+        color: appConstant.primaryColor,
         onRefresh: () async {
-          await auth.getUserData();
+          await Get.find<AuthController>().getUserData();
           setState(() {});
         },
-        child: auth.userData.address!.isEmpty
+        child: Get.find<AuthController>().userData.address!.isEmpty
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -53,16 +53,16 @@ class _AddressScreenState extends State<AddressScreen> {
                       height: 10,
                     ),
                     Text(
-                      'noAddress'.tr(context),
+                      'noAddress'.tr,
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     )
                   ],
                 ),
               )
             : ListView.builder(
-                itemCount: auth.userData.address!.length,
+                itemCount: Get.find<AuthController>().userData.address!.length,
                 itemBuilder: (context, index) {
-                  var e = auth.userData.address![index];
+                  var e = Get.find<AuthController>().userData.address![index];
                   return GestureDetector(
                     onTap: () async {
                       await Navigator.push(
@@ -79,7 +79,7 @@ class _AddressScreenState extends State<AddressScreen> {
                       padding: const EdgeInsets.all(10),
                       margin: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          border: Border.all(color: primaryColor),
+                          border: Border.all(color: appConstant.primaryColor),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(25))),
                       child: Column(
@@ -101,11 +101,11 @@ class _AddressScreenState extends State<AddressScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 2, horizontal: 5),
                                     decoration: BoxDecoration(
-                                        color: primaryColor,
+                                        color: appConstant.primaryColor,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(10))),
                                     child: Text(
-                                      'default'.tr(context),
+                                      'default'.tr,
                                       style: const TextStyle(
                                           fontSize: 10, color: Colors.white),
                                     ))
@@ -115,7 +115,7 @@ class _AddressScreenState extends State<AddressScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('address'.tr(context)),
+                              Text('address'.tr),
                               const SizedBox(
                                 width: 10,
                               ),
@@ -130,7 +130,7 @@ class _AddressScreenState extends State<AddressScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('phone'.tr(context)),
+                              Text('phone'.tr),
                               const SizedBox(
                                 width: 10,
                               ),

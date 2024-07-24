@@ -1,10 +1,11 @@
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/coupon_model.dart';
 import 'package:alnoor/views/screens/coupon_details.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:ticket_widget/ticket_widget.dart';
 
@@ -34,7 +35,7 @@ class _AdminCouponsState extends State<AdminCoupons> {
         }
       }),
       body: RefreshIndicator(
-        color: primaryColor,
+        color: appConstant.primaryColor,
         onRefresh: () async {
           setState(() {});
         },
@@ -89,11 +90,11 @@ class _AdminCouponsState extends State<AdminCoupons> {
                                     setState(() {});
                                   },
                                   child: TicketWidget(
-                                    width: dWidth,
+                                    width: Get.width,
                                     height: 150,
                                     margin: const EdgeInsets.symmetric(
                                         vertical: 10),
-                                    color: primaryColor,
+                                    color: appConstant.primaryColor,
                                     isCornerRounded: true,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 15),

@@ -1,12 +1,11 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:alnoor/controllers/app_localization.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/views/widgets/edit_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class BottomSheetForgot extends StatefulWidget {
   const BottomSheetForgot({super.key});
@@ -28,9 +27,10 @@ class _BottomSheetForgotState extends State<BottomSheetForgot> {
       setState(() {
         loading = true;
       });
-      await firebaseAuth.sendPasswordResetEmail(email: auth.email.text);
-      Navigator.of(context).pop();
-      Fluttertoast.showToast(msg: 'passwordSent'.tr(context));
+      await firebaseAuth.sendPasswordResetEmail(
+          email: Get.find<AuthController>().email.text);
+      Get.back();
+      Fluttertoast.showToast(msg: 'passwordSent'.tr);
     } on FirebaseAuthException catch (e) {
       setState(() {
         loading = false;
@@ -51,7 +51,7 @@ class _BottomSheetForgotState extends State<BottomSheetForgot> {
           ),
           Center(
             child: Text(
-              'resetPassword'.tr(context),
+              'resetPassword'.tr,
               style: const TextStyle(fontSize: 25),
             ),
           ),
@@ -60,11 +60,11 @@ class _BottomSheetForgotState extends State<BottomSheetForgot> {
                 const EdgeInsets.only(top: 30, bottom: 40, left: 20, right: 20),
             child: EditText(
                 hint: 'example@gmail.com',
-                function: auth.auth,
-                controller: auth.email,
+                function: Get.find<AuthController>().auth,
+                controller: Get.find<AuthController>().email,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'pleaseEmail'.tr(context);
+                    return 'pleaseEmail'.tr;
                   }
                   return null;
                 },
@@ -79,14 +79,14 @@ class _BottomSheetForgotState extends State<BottomSheetForgot> {
               },
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              color: primaryColor,
+              color: appConstant.primaryColor,
               child: loading
                   ? const CircularProgressIndicator(
                       color: Colors.white,
                       strokeWidth: 2,
                     )
                   : Text(
-                      'submit'.tr(context),
+                      'submit'.tr,
                       style: const TextStyle(fontSize: 18, color: Colors.white),
                     ),
             ),

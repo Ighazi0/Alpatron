@@ -1,6 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
@@ -8,6 +8,7 @@ import 'package:alnoor/views/widgets/category_picker_bottom_sheet.dart';
 import 'package:alnoor/views/widgets/edit_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_pickers/image_pickers.dart';
 
 class AdminProductDetails extends StatefulWidget {
@@ -86,7 +87,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
       });
     }
 
-    Navigator.pop(context);
+    Get.back();
   }
 
   _openPicker() async {
@@ -95,7 +96,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
       showGif: false,
       showCamera: true,
       selectCount: 5 - selectedImages.length,
-      uiConfig: UIConfig(uiThemeColor: primaryColor),
+      uiConfig: UIConfig(uiThemeColor: appConstant.primaryColor),
     );
 
     for (var element in listImagePaths) {
@@ -248,7 +249,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
                     }), 0.5, 0.9);
                   },
                   child: Container(
-                    width: dWidth,
+                    width: Get.width,
                     margin: const EdgeInsets.only(top: 10),
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
@@ -345,7 +346,7 @@ class _AdminProductDetailsState extends State<AdminProductDetails> {
                                 .collection('products')
                                 .doc(widget.product.id)
                                 .delete();
-                            Navigator.pop(context);
+                            Get.back();
                           },
                           icon: const Icon(
                             Icons.delete,

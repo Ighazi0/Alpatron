@@ -1,12 +1,11 @@
-import 'package:alnoor/controllers/app_localization.dart';
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/order_model.dart';
 import 'package:alnoor/views/screens/order_details.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 class AdminOrders extends StatefulWidget {
@@ -59,7 +58,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                         },
                         child: Text(
                           'All',
-                          style: TextStyle(color: primaryColor),
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -67,8 +66,8 @@ class _AdminOrdersState extends State<AdminOrders> {
                           filter('inProgress');
                         },
                         child: Text(
-                          'inProgress'.tr(context),
-                          style: TextStyle(color: primaryColor),
+                          'inProgress'.tr,
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -76,8 +75,8 @@ class _AdminOrdersState extends State<AdminOrders> {
                           filter('inDelivery');
                         },
                         child: Text(
-                          'inDelivery'.tr(context),
-                          style: TextStyle(color: primaryColor),
+                          'inDelivery'.tr,
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -85,8 +84,8 @@ class _AdminOrdersState extends State<AdminOrders> {
                           filter('complete');
                         },
                         child: Text(
-                          'complete'.tr(context),
-                          style: TextStyle(color: primaryColor),
+                          'complete'.tr,
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                       TextButton(
@@ -94,8 +93,8 @@ class _AdminOrdersState extends State<AdminOrders> {
                           filter('cancel');
                         },
                         child: Text(
-                          'cancel'.tr(context),
-                          style: TextStyle(color: primaryColor),
+                          'cancel'.tr,
+                          style: TextStyle(color: appConstant.primaryColor),
                         ),
                       ),
                     ],
@@ -107,7 +106,7 @@ class _AdminOrdersState extends State<AdminOrders> {
         },
       ),
       body: RefreshIndicator(
-          color: primaryColor,
+          color: appConstant.primaryColor,
           onRefresh: () async {
             setState(() {});
           },
@@ -184,20 +183,18 @@ class _AdminOrdersState extends State<AdminOrders> {
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    Text(
-                                        '${'orderNo'.tr(context)}. ${order.number}'),
+                                    Text('${'orderNo'.tr}. ${order.number}'),
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    Text(
-                                        '${'name'.tr(context)}: ${order.name}'),
+                                    Text('${'name'.tr}: ${order.name}'),
                                     const SizedBox(
                                       height: 5,
                                     )
                                   ],
                                 ),
-                                subtitle: Text(DateFormat(
-                                        'dd/MM/yyyy hh:mm a', locale.locale)
+                                subtitle: Text(DateFormat('dd/MM/yyyy hh:mm a',
+                                        Get.locale!.languageCode)
                                     .format(order.timestamp!)),
                                 trailing: Icon(
                                   order.status == 'inProgress'

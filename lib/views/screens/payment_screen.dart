@@ -1,11 +1,12 @@
-import 'package:alnoor/controllers/app_localization.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/user_model.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/payment_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:get/get.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -20,7 +21,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarCustom(
-        title: 'paymentMethod'.tr(context),
+        title: 'paymentMethod'.tr,
         action: {
           'title': 'add',
           'function': () async {
@@ -31,16 +32,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
         },
       ),
       body: RefreshIndicator(
-        color: primaryColor,
+        color: appConstant.primaryColor,
         onRefresh: () async {
-          await auth.getUserData();
+          await Get.find<AuthController>().getUserData();
           setState(() {});
         },
         child: loading
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : auth.userData.wallet!.isEmpty
+            : Get.find<AuthController>().userData.wallet!.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,16 +54,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           height: 10,
                         ),
                         Text(
-                          'noPayment'.tr(context),
+                          'noPayment'.tr,
                           style: const TextStyle(fontWeight: FontWeight.w500),
                         )
                       ],
                     ),
                   )
                 : ListView.builder(
-                    itemCount: auth.userData.wallet!.length,
+                    itemCount:
+                        Get.find<AuthController>().userData.wallet!.length,
                     itemBuilder: (context, index) {
-                      var e = auth.userData.wallet![index];
+                      var e =
+                          Get.find<AuthController>().userData.wallet![index];
                       return Column(
                         children: [
                           if (index == 0)
@@ -70,18 +73,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 2, horizontal: 5),
                                 decoration: BoxDecoration(
-                                    color: primaryColor,
+                                    color: appConstant.primaryColor,
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(10))),
                                 child: Text(
-                                  'default'.tr(context),
+                                  'default'.tr,
                                   style: const TextStyle(
                                       fontSize: 10, color: Colors.white),
                                 )),
                           Dismissible(
                             key: UniqueKey(),
                             onDismissed: (direction) async {
-                              var d = auth.userData.wallet;
+                              var d =
+                                  Get.find<AuthController>().userData.wallet;
                               setState(() {
                                 loading = true;
                               });
@@ -98,7 +102,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     })
                               });
 
-                              await auth.getUserData();
+                              await Get.find<AuthController>().getUserData();
                               setState(() {
                                 loading = false;
                               });
@@ -121,7 +125,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   height: 125,
                                   isSwipeGestureEnabled: false,
                                   isChipVisible: false,
-                                  cardBgColor: primaryColor,
+                                  cardBgColor: appConstant.primaryColor,
                                   enableFloatingCard: true,
                                   cardNumber: e.number,
                                   expiryDate: e.date,
@@ -139,7 +143,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     top: 10,
                                     child: IconButton(
                                         onPressed: () async {
-                                          var d = auth.userData.wallet;
+                                          var d = Get.find<AuthController>()
+                                              .userData
+                                              .wallet;
                                           setState(() {
                                             loading = true;
                                           });
@@ -164,7 +170,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 })
                                           });
 
-                                          await auth.getUserData();
+                                          await Get.find<AuthController>()
+                                              .getUserData();
                                           setState(() {
                                             loading = false;
                                           });

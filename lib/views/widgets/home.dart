@@ -1,18 +1,17 @@
-import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/cubit/user_cubit.dart';
+import 'package:alnoor/controllers/user_controller.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/banner_model.dart';
 import 'package:alnoor/models/category_model.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/screens/category_screen.dart';
-import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:alnoor/views/widgets/network_image.dart';
 import 'package:alnoor/views/widgets/product_tile.dart';
 import 'package:alnoor/views/widgets/shimmer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -34,11 +33,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
+    return GetBuilder(
+      init: UserController(),
+      builder: (userCubit) {
         return Scaffold(
             body: RefreshIndicator(
-          color: primaryColor,
+          color: appConstant.primaryColor,
           onRefresh: () async {
             setState(() {});
           },
@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
                                             height: 10,
                                           ),
                                           Text(
-                                            'noProducts'.tr(context),
+                                            'noProducts'.tr,
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.w500),
                                           )
@@ -158,7 +158,7 @@ class _HomeState extends State<Home> {
                                                         seconds: 30)),
                                             items: data.map((i) {
                                               return Container(
-                                                width: dWidth,
+                                                width: Get.width,
                                                 margin:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10),
@@ -174,7 +174,7 @@ class _HomeState extends State<Home> {
                                                   child: NImage(
                                                     url: i.url,
                                                     h: 200,
-                                                    w: dWidth,
+                                                    w: Get.width,
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -199,7 +199,8 @@ class _HomeState extends State<Home> {
                                                       horizontal: 4.0),
                                                   decoration: BoxDecoration(
                                                       shape: BoxShape.circle,
-                                                      color: (primaryColor)
+                                                      color: (appConstant
+                                                              .primaryColor)
                                                           .withOpacity(
                                                               current ==
                                                                       entry.key
@@ -220,11 +221,11 @@ class _HomeState extends State<Home> {
                                       items: [1, 2].map((i) {
                                         return Shimmers(
                                           child: Container(
-                                            width: dWidth,
+                                            width: Get.width,
                                             margin: const EdgeInsets.symmetric(
                                                 vertical: 10),
                                             decoration: BoxDecoration(
-                                                color: primaryColor,
+                                                color: appConstant.primaryColor,
                                                 borderRadius:
                                                     const BorderRadius.all(
                                                         Radius.circular(20))),
@@ -248,7 +249,7 @@ class _HomeState extends State<Home> {
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 10),
                                 height: 80,
-                                width: dWidth,
+                                width: Get.width,
                                 child: ListView.separated(
                                   separatorBuilder: (context, index) =>
                                       const SizedBox(
@@ -289,7 +290,8 @@ class _HomeState extends State<Home> {
                                                         Radius.circular(100)),
                                                 border: Border.all(
                                                     width: 0.25,
-                                                    color: primaryColor),
+                                                    color: appConstant
+                                                        .primaryColor),
                                               ),
                                               child: index == 9
                                                   ? const Icon(

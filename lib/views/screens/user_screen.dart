@@ -1,14 +1,12 @@
-import 'package:alnoor/cubit/user_cubit.dart';
+import 'package:alnoor/controllers/auth_controller.dart';
+import 'package:alnoor/controllers/user_controller.dart';
 import 'package:alnoor/views/screens/cart_screen.dart';
 import 'package:alnoor/views/screens/categories_screen.dart';
-import 'package:alnoor/views/screens/splash_screen.dart';
+import 'package:alnoor/views/screens/orders_screen.dart';
 import 'package:alnoor/views/widgets/home.dart';
-import 'package:alnoor/views/widgets/profile.dart';
 import 'package:alnoor/views/widgets/user_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-UserCubit userCubit = UserCubit();
+import 'package:get/get.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -20,16 +18,16 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
-        userCubit = BlocProvider.of<UserCubit>(context);
+    return GetBuilder(
+      init: UserController(),
+      builder: (userCubit) {
         return Scaffold(
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               centerTitle: false,
               title: Text(
-                'Hi, ${auth.userData.name}',
+                'Hi, ${Get.find<AuthController>().userData.name}',
                 style: const TextStyle(
                   color: Colors.black,
                 ),
@@ -37,7 +35,7 @@ class _UserScreenState extends State<UserScreen> {
               actions: [
                 IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, 'wish');
+                      Get.toNamed('wish');
                     },
                     icon: const Icon(
                       Icons.favorite_border,
@@ -45,10 +43,10 @@ class _UserScreenState extends State<UserScreen> {
                     )),
                 IconButton(
                     onPressed: () async {
-                      Navigator.pushNamed(context, 'notification');
+                      Get.to(() => const OrdersScreen());
                     },
                     icon: const Icon(
-                      Icons.notifications,
+                      Icons.paste,
                       color: Colors.black,
                     )),
                 const SizedBox(
@@ -64,7 +62,6 @@ class _UserScreenState extends State<UserScreen> {
                   Home(),
                   CategoriesScreen(),
                   CartScreen(),
-                  Profile()
                 ],
               ),
             ));

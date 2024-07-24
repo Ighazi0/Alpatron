@@ -1,4 +1,4 @@
-import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/views/widgets/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ class NImage extends StatelessWidget {
         progressIndicatorBuilder: (context, url, progress) => Shimmers(
               child: Container(
                 height: h,
-                color: primaryColor,
+                color: appConstant.primaryColor,
               ),
             ));
   }

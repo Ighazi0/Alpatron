@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:alnoor/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewer extends StatefulWidget {
@@ -12,6 +17,13 @@ class WebViewer extends StatefulWidget {
 class _WebViewerState extends State<WebViewer> {
   late final WebViewController controller;
   bool loading = true;
+  late Timer timer;
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -19,14 +31,26 @@ class _WebViewerState extends State<WebViewer> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {},
           onPageFinished: (String url) {
             setState(() {
               loading = false;
             });
           },
           onUrlChange: (UrlChange change) async {
-            // print('object2${change.url}');
+            timer = Timer.periodic(const Duration(seconds: 2), (e) {
+              Future future = controller
+                  .runJavaScriptReturningResult("document.body.innerText");
+              future.then((data) {
+                String text = GetPlatform.isIOS
+                    ? data.toString()
+                    : jsonDecode(data).toString();
+                Get.log(text);
+                if (text.toLowerCase().contains('accepted')) {
+                  Get.find<UserController>().changeDone(true);
+                  Get.back();
+                }
+              });
+            });
           },
         ),
       )
@@ -37,7 +61,16 @@ class _WebViewerState extends State<WebViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            )),
+      ),
       body: SafeArea(
         child: loading
             ? const Center(

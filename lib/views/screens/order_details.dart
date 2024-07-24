@@ -1,5 +1,5 @@
-import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/order_model.dart';
 import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/screens/product_details.dart';
@@ -7,7 +7,7 @@ import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/bottom_sheet_status.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class OrderDetails extends StatefulWidget {
@@ -43,7 +43,7 @@ class _OrderDetailsState extends State<OrderDetails> {
     return Scaffold(
       appBar: AppBarCustom(
         action: order.status != 'complete' &&
-                firebaseAuth.currentUser!.uid == staticData.adminUID
+                firebaseAuth.currentUser!.uid == appConstant.adminUid
             ? {
                 'title': 'update',
                 'function': () async {
@@ -59,7 +59,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: RefreshIndicator(
-            color: primaryColor,
+            color: appConstant.primaryColor,
             onRefresh: () async {
               fetch();
             },
@@ -89,7 +89,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ),
                       Text(
                         'Order date:'
-                        ' ${DateFormat('dd/MM/yyyy', locale.locale).format(order.timestamp!)}',
+                        ' ${DateFormat(
+                          'dd/MM/yyyy',
+                        ).format(order.timestamp!)}',
                         style: const TextStyle(),
                       ),
                       const SizedBox(
@@ -105,7 +107,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                       ),
                       Text(
                         'Order status:'
-                        ' ${order.status.tr(context)}s',
+                        ' ${order.status.tr}s',
                         style: const TextStyle(),
                       ),
                     ]),
@@ -127,21 +129,21 @@ class _OrderDetailsState extends State<OrderDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${'name'.tr(context)}:' ' ${order.name}',
+                        '${'name'.tr}:' ' ${order.name}',
                         style: const TextStyle(),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        'Deliver to:'
-                        ' ${order.addressData!.address}',
-                        style: const TextStyle(),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(order.addressData!.phone),
+                      // Text(
+                      //   'Deliver to:'
+                      //   ' ${order.addressData!.address}',
+                      //   style: const TextStyle(),
+                      // ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
+                      // Text(order.addressData!.phone),
                     ]),
               ),
               Container(
@@ -160,8 +162,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${'total'.tr(context)}: '
-                          '${'AED'.tr(context)} ${(order.total + order.delivery).toStringAsFixed(2)}'),
+                      Text('${'total'.tr}: '
+                          '${'AED'.tr} ${(order.total + order.delivery).toStringAsFixed(2)}'),
                     ]),
               ),
               ListView.builder(
@@ -201,14 +203,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                         ),
                       ),
                       title: Text(
-                        locale.locale == 'ar'
+                        Get.locale!.languageCode == 'ar'
                             ? orderList.titleAr
                             : orderList.titleEn,
                         overflow: TextOverflow.ellipsis,
                       ),
                       visualDensity: const VisualDensity(vertical: 4),
                       subtitle: Text(
-                        '${'AED'.tr(context)} ${orderList.price}  x${orderList.count}',
+                        '${'AED'.tr} ${orderList.price}  x${orderList.count}',
                         style: const TextStyle(
                             color: Colors.black, fontWeight: FontWeight.w500),
                       ),

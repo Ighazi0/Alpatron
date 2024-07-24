@@ -1,13 +1,12 @@
-import 'package:alnoor/controllers/app_localization.dart';
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/cubit/user_cubit.dart';
+import 'package:alnoor/controllers/user_controller.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/product_model.dart';
-import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:alnoor/views/widgets/app_bar.dart';
 import 'package:alnoor/views/widgets/network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class ProductDetails extends StatefulWidget {
   const ProductDetails({super.key, required this.product});
@@ -30,8 +29,9 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
+    return GetBuilder(
+      init: UserController(),
+      builder: (userCubit) {
         return Scaffold(
             bottomNavigationBar: widget.product.stock == 0
                 ? SafeArea(
@@ -43,11 +43,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     child: Text(
-                      'out'.tr(context),
+                      'out'.tr,
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor),
+                          color: appConstant.primaryColor),
                     ),
                   ))
                 : null,
@@ -70,7 +70,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 autoPlayInterval: const Duration(seconds: 20)),
                             items: widget.product.media!.map((i) {
                               return Container(
-                                width: dWidth,
+                                width: Get.width,
                                 margin: const EdgeInsets.only(bottom: 10),
                                 decoration: const BoxDecoration(
                                     color: Colors.white,
@@ -82,7 +82,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   child: NImage(
                                     url: i,
                                     h: 200,
-                                    w: dWidth,
+                                    w: Get.width,
                                     fit: BoxFit.fitHeight,
                                   ),
                                 ),
@@ -105,8 +105,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       horizontal: 4.0),
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: (primaryColor).withOpacity(
-                                          current == entry.key ? 0.9 : 0.4)),
+                                      color: (appConstant.primaryColor)
+                                          .withOpacity(current == entry.key
+                                              ? 0.9
+                                              : 0.4)),
                                 ),
                               );
                             }).toList(),
@@ -163,7 +165,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            locale.locale == 'ar'
+                            Get.locale!.languageCode == 'ar'
                                 ? widget.product.titleAr
                                 : widget.product.titleEn,
                             style: const TextStyle(
@@ -177,7 +179,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Column(
                                 children: [
                                   Text(
-                                    '${'AED'.tr(context)} ${widget.product.price.toStringAsFixed(2)}',
+                                    '${'AED'.tr} ${widget.product.price.toStringAsFixed(2)}',
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         decoration: widget.product.discount == 0
@@ -211,7 +213,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       },
                                       icon: Icon(
                                         Icons.add_shopping_cart,
-                                        color: primaryColor,
+                                        color: appConstant.primaryColor,
                                       )),
                               IconButton(
                                   onPressed: () {
@@ -220,7 +222,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   },
                                   icon: Icon(
                                     Icons.share,
-                                    color: primaryColor,
+                                    color: appConstant.primaryColor,
                                   ))
                             ],
                           ),
@@ -229,7 +231,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               padding:
                                   const EdgeInsets.only(top: 10, bottom: 10),
                               child: Text(
-                                'description'.tr(context),
+                                'description'.tr,
                                 style: const TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold),
                               ),
@@ -249,7 +251,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: primaryColor),
+                                        color: appConstant.primaryColor),
                                   ),
                                   const Divider(),
                                   Text(

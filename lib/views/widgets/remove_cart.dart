@@ -1,11 +1,11 @@
 import 'package:alnoor/controllers/my_app.dart';
-import 'package:alnoor/cubit/user_cubit.dart';
+import 'package:alnoor/controllers/user_controller.dart';
+import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/cart_model.dart';
-import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:alnoor/views/widgets/counter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class BottomSheetRemoveCart extends StatefulWidget {
   const BottomSheetRemoveCart({super.key, this.index = 0});
@@ -20,14 +20,15 @@ class _BottomSheetRemoveCartState extends State<BottomSheetRemoveCart> {
 
   @override
   void initState() {
-    cart = userCubit.cartList.values.toList()[widget.index];
+    cart = Get.find<UserController>().cartList.values.toList()[widget.index];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
+    return GetBuilder(
+      init: UserController(),
+      builder: (userCubit) {
         return ListView(
           controller: staticWidgets.scrollController,
           children: [
@@ -122,7 +123,7 @@ class _BottomSheetRemoveCartState extends State<BottomSheetRemoveCart> {
                   },
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25))),
-                  color: primaryColor,
+                  color: appConstant.primaryColor,
                   child: const Text(
                     'Remove',
                     style: TextStyle(fontSize: 18, color: Colors.white),
