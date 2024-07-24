@@ -1,3 +1,4 @@
+import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/controllers/user_controller.dart';
 import 'package:alnoor/get_initial.dart';
@@ -22,8 +23,10 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   void initState() {
-    favorite =
-        widget.product.favorites!.contains(firebaseAuth.currentUser!.uid);
+    if (Get.find<AuthController>().userData.uid.isNotEmpty) {
+      favorite = widget.product.favorites!
+          .contains(Get.find<AuthController>().userData.uid);
+    }
     super.initState();
   }
 
@@ -129,7 +132,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 return IconButton(
                                   icon: Icon(
                                     product.favorites!.contains(
-                                            firebaseAuth.currentUser!.uid)
+                                            Get.find<AuthController>()
+                                                .userData
+                                                .uid)
                                         ? Icons.favorite
                                         : Icons.favorite_border,
                                     color: Colors.red,

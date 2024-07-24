@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:114679571707:android:828af3d5a4d4d2df76bc5e",
+        "mobilesdk_app_id": "1:114679571707:android:fab77fa4601c164776bc5e",
         "android_client_info": {
-          "package_name": "com.comma.alnoor"
+          "package_name": "com.comma.alnooralsate"
         }
       },
       "oauth_client": [],

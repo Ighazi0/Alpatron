@@ -104,9 +104,8 @@ class _CartScreenState extends State<CartScreen> {
             "action": "PURCHASE",
             "amount": {
               "currencyCode": "AED",
-              "value": double.parse(
-                  (Get.find<UserController>().totalCartPrice())
-                      .toStringAsFixed(2))
+              "value": (Get.find<UserController>().totalCartPrice() * 100)
+                  .toStringAsFixed(0)
             },
             "emailAddress": Get.find<AuthController>().userData.email,
           }),
@@ -120,9 +119,15 @@ class _CartScreenState extends State<CartScreen> {
         await Get.to(() => WebViewer(url: data['href'].toString()));
         if (Get.find<UserController>().done) {
           await ordering();
+        } else {
+          Fluttertoast.showToast(msg: 'paymentFailed'.tr);
         }
-      } else {}
-    } else {}
+      } else {
+        Fluttertoast.showToast(msg: 'paymentFailed'.tr);
+      }
+    } else {
+      Fluttertoast.showToast(msg: 'paymentFailed'.tr);
+    }
   }
 
   @override

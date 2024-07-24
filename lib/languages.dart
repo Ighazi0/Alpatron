@@ -122,7 +122,8 @@ class Languages extends Translations {
           "code": "كود الكوبون",
           "out": "انتهت الكمية",
           "addTo": "اضف للسلة",
-          "update": "تحديث"
+          "update": "تحديث",
+          "paymentFailed": "فشلت عملية الدفع"
         },
         'en_US': {
           "alnoor": "Alnoor",
@@ -234,7 +235,8 @@ class Languages extends Translations {
           "out": "Out of stock",
           "addTo": "Add to cart",
           "noOrders": "No orders",
-          "paymentMethod": "Payment methods"
+          "paymentMethod": "Payment methods",
+          "paymentFailed": "Payment failed"
         }
       };
 }
