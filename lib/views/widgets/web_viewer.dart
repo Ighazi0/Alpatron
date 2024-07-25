@@ -45,7 +45,9 @@ class _WebViewerState extends State<WebViewer> {
                     ? data.toString()
                     : jsonDecode(data).toString();
                 Get.log(text);
-                if (text.toLowerCase().contains('accepted')) {
+                if (text.removeAllWhitespace
+                    .toLowerCase()
+                    .contains('paymentaccepted')) {
                   Get.find<UserController>().changeDone(true);
                   Get.back();
                 }

@@ -16,8 +16,10 @@ class _UserBottomBarState extends State<UserBottomBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90,
-      color: Colors.white,
+      height: 100,
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.black12))),
       child: GetBuilder(
         init: UserController(),
         builder: (userCubit) {
@@ -26,7 +28,7 @@ class _UserBottomBarState extends State<UserBottomBar> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(3, (index) {
                   var e = staticData.bottomBar[index].entries.toList().first;
-                  return GestureDetector(
+                  return InkWell(
                     onTap: () {
                       userCubit.changeIndex(index);
                     },

@@ -104,8 +104,8 @@ class _CartScreenState extends State<CartScreen> {
             "action": "PURCHASE",
             "amount": {
               "currencyCode": "AED",
-              "value": (Get.find<UserController>().totalCartPrice() * 100)
-                  .toStringAsFixed(0)
+              "value":
+                  (Get.find<UserController>().totalCartPrice() * 100).toInt()
             },
             "emailAddress": Get.find<AuthController>().userData.email,
           }),

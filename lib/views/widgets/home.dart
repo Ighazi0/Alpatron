@@ -328,7 +328,7 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                               SizedBox(
-                                height: 220,
+                                height: 250,
                                 child: FutureBuilder(
                                   future: firestore
                                       .collection('products')
@@ -381,7 +381,7 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                               SizedBox(
-                                height: 220,
+                                height: 250,
                                 child: FutureBuilder(
                                   future: firestore
                                       .collection('products')

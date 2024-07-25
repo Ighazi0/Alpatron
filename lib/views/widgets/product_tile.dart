@@ -5,8 +5,8 @@ import 'package:alnoor/models/product_model.dart';
 import 'package:alnoor/views/screens/product_details.dart';
 import 'package:alnoor/views/widgets/network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:icons_plus/icons_plus.dart';
 
 class ProductTile extends StatefulWidget {
   const ProductTile({super.key, required this.product});
@@ -136,36 +136,6 @@ class _ProductTileState extends State<ProductTile> {
                           style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
-                      widget.product.stock == 0
-                          ? Container()
-                          : InkWell(
-                              onTap: () {
-                                if (userCubit.cartList
-                                    .containsKey(widget.product.id)) {
-                                  if (userCubit
-                                          .cartList[widget.product.id]!.count <
-                                      widget.product.stock) {
-                                    userCubit.addToCart(widget.product, 1);
-                                  }
-                                } else {
-                                  userCubit.addToCart(widget.product, 1);
-                                }
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100))),
-                                width: 30,
-                                height: 30,
-                                child: Icon(
-                                  LineAwesome.cart_arrow_down_solid,
-                                  color: appConstant.primaryColor,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
                     ],
                   ),
                 ),
@@ -195,7 +165,24 @@ class _ProductTileState extends State<ProductTile> {
                       ],
                     ),
                   ),
-                )
+                ),
+                widget.product.stock == 0
+                    ? Container()
+                    : InkWell(
+                        onTap: () {
+                          if (userCubit.cartList
+                              .containsKey(widget.product.id)) {
+                            if (userCubit.cartList[widget.product.id]!.count <
+                                widget.product.stock) {
+                              userCubit.addToCart(widget.product, 1);
+                            }
+                          } else {
+                            userCubit.addToCart(widget.product, 1);
+                          }
+                          Fluttertoast.showToast(msg: 'Added ');
+                        },
+                        child: const Chip(label: Text('Add to cart')),
+                      ),
               ],
             ),
           ),
