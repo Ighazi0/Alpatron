@@ -151,9 +151,6 @@ class AuthController extends GetxController {
       } else {
         await signUp();
       }
-      email.clear();
-      name.clear();
-      password.clear();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: e.code.tr);
