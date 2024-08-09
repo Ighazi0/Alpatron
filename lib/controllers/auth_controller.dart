@@ -89,17 +89,16 @@ class AuthController extends GetxController {
             .doc(firebaseAuth.currentUser!.uid)
             .get()
             .then((value) {
-          userData = UserModel.fromJson(value.data() as Map);
+          if (value.exists) {
+            userData = UserModel.fromJson(value.data() as Map);
+          } else {
+            logOut();
+          }
         });
       } catch (e) {
-        Fluttertoast.showToast(msg: 'error');
+        logOut();
       }
     }
-  }
-
-  deleteAccount() async {
-    logOut();
-    await firebaseAuth.currentUser!.delete();
   }
 
   navigator() async {
@@ -108,8 +107,10 @@ class AuthController extends GetxController {
     } else {
       if (firebaseAuth.currentUser != null) {
         requestPermission();
+        Get.offNamed('user');
+      } else {
+        Get.offNamed('register');
       }
-      Get.offNamed('user');
     }
   }
 
@@ -152,6 +153,7 @@ class AuthController extends GetxController {
         await signUp();
       }
     } on FirebaseAuthException catch (e) {
+      Get.log(e.message.toString());
       if (e.code == 'email-already-in-use') {
         Fluttertoast.showToast(msg: e.code.tr);
       }

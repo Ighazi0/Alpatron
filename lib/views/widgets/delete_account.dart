@@ -25,7 +25,7 @@ class _BottomSheetDeleteAccountState extends State<BottomSheetDeleteAccount> {
         Container(
           alignment: Alignment.center,
           child: Text(
-            'sureDelete'.tr,
+            'Are you sure you want to delete your account?'.tr,
             style: const TextStyle(
               fontSize: 20,
             ),
@@ -54,7 +54,7 @@ class _BottomSheetDeleteAccountState extends State<BottomSheetDeleteAccount> {
                   borderRadius: BorderRadius.all(Radius.circular(25))),
               color: Colors.grey.shade400,
               child: Text(
-                'cancelx'.tr,
+                'cancel'.tr,
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
@@ -68,7 +68,7 @@ class _BottomSheetDeleteAccountState extends State<BottomSheetDeleteAccount> {
                 setState(() {
                   loading = true;
                 });
-                Get.find<AuthController>().deleteAccount();
+                Get.find<AuthController>().logOut();
               },
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(25))),

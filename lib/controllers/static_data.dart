@@ -6,6 +6,7 @@ class StaticData {
     {'home': Iconsax.home_1_bold},
     {'categories': Icons.category},
     {'cart': Icons.shopping_cart},
+    {'profile': Icons.person},
   ];
 
   List<Map> categories = [

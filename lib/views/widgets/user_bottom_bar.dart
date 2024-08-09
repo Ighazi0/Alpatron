@@ -26,7 +26,7 @@ class _UserBottomBarState extends State<UserBottomBar> {
           return SafeArea(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(3, (index) {
+                children: List.generate(staticData.bottomBar.length, (index) {
                   var e = staticData.bottomBar[index].entries.toList().first;
                   return InkWell(
                     onTap: () {

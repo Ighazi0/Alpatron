@@ -2,8 +2,8 @@ import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/user_controller.dart';
 import 'package:alnoor/views/screens/cart_screen.dart';
 import 'package:alnoor/views/screens/categories_screen.dart';
-import 'package:alnoor/views/screens/orders_screen.dart';
 import 'package:alnoor/views/widgets/home.dart';
+import 'package:alnoor/views/widgets/profile.dart';
 import 'package:alnoor/views/widgets/user_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,17 +41,6 @@ class _UserScreenState extends State<UserScreen> {
                       Icons.favorite_border,
                       color: Colors.black,
                     )),
-                IconButton(
-                    onPressed: () async {
-                      Get.to(() => const OrdersScreen());
-                    },
-                    icon: const Icon(
-                      Icons.paste,
-                      color: Colors.black,
-                    )),
-                const SizedBox(
-                  width: 5,
-                ),
               ],
             ),
             bottomNavigationBar: const UserBottomBar(),
@@ -62,6 +51,7 @@ class _UserScreenState extends State<UserScreen> {
                   Home(),
                   CategoriesScreen(),
                   CartScreen(),
+                  Profile()
                 ],
               ),
             ));
