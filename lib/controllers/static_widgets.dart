@@ -1,8 +1,13 @@
 import 'package:alnoor/get_initial.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StaticWidgets {
   ScrollController scrollController = ScrollController();
+
+  urlLauncher(Uri uri) async {
+    await launchUrl(uri);
+  }
 
   showBottom(
       BuildContext context, Widget widget, double min, double max) async {

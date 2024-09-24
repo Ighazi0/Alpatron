@@ -4,8 +4,10 @@ import 'package:alnoor/controllers/auth_controller.dart';
 import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/controllers/user_controller.dart';
 import 'package:alnoor/get_initial.dart';
+import 'package:alnoor/models/app_data_model.dart';
 import 'package:alnoor/models/cart_model.dart';
 import 'package:alnoor/models/order_model.dart';
+import 'package:alnoor/models/payment_model.dart';
 import 'package:alnoor/views/screens/order_details.dart';
 import 'package:alnoor/views/screens/product_details.dart';
 import 'package:http/http.dart' as http;
@@ -26,108 +28,135 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  bool makeOrder = false;
-  ordering() async {
-    var id = DateTime.now(), numbbers = 0;
-    await firestore.collection('orders').get().then((value) {
-      numbbers = value.size;
-    });
+  Paymob? paymob;
+  bool makeOrder = false, loading = false;
+  TextEditingController code = TextEditingController();
+  var auth = Get.find<AuthController>(),
+      userController = Get.find<UserController>();
 
-    for (int i = 0;
-        i < Get.find<UserController>().cartList.entries.length;
-        i++) {
-      await firestore
-          .collection('products')
-          .doc(Get.find<UserController>().cartList.entries.toList()[i].key)
-          .update({
-        'stock': FieldValue.increment(-Get.find<UserController>()
-            .cartList
-            .entries
-            .toList()[i]
-            .value
-            .count),
-        'seller': FieldValue.increment(1)
+  ordering() async {
+    var id = DateTime.now(), numbers = 0, done = false;
+
+    QuerySnapshot querySnapshot = await firestore
+        .collection('orders')
+        .orderBy('number', descending: true)
+        .limit(1)
+        .get();
+
+    numbers = querySnapshot.docs.first.get('number') + 1;
+
+    await makePayment();
+
+    numbers = querySnapshot.docs.first.get('number') + 1;
+
+    done = userController.done;
+
+    if (done) {
+      for (int i = 0; i < userController.cartList.entries.length; i++) {
+        await firestore
+            .collection('products')
+            .doc(userController.cartList.entries.toList()[i].key)
+            .update({
+          'stock': FieldValue.increment(
+              -userController.cartList.entries.toList()[i].value.count),
+          'seller': FieldValue.increment(1)
+        });
+      }
+
+      var data = {
+        'number': numbers,
+        'uid': firebaseAuth.currentUser!.uid,
+        'total': userController.totalCartPrice(),
+        'discount': 0,
+        'delivery': 25,
+        'rated': false,
+        'status': 'inProgress',
+        'name': Get.find<AuthController>().userData.name,
+        'timestamp': id.toIso8601String(),
+        'orderList': userController.cartList.entries
+            .map((e) => {
+                  'id': e.key,
+                  'titleEn': e.value.productData!.titleEn,
+                  'titleAr': e.value.productData!.titleAr,
+                  'price': e.value.productData!.price,
+                  'discount': e.value.productData!.discount,
+                  'media': [e.value.productData!.media!.first],
+                  'count': e.value.count,
+                })
+            .toList()
+      };
+      Fluttertoast.showToast(msg: 'orderPlaced'.tr);
+      Get.to(() => OrderDetails(order: OrderModel.fromJson(data)));
+      firestore
+          .collection('orders')
+          .doc(id.millisecondsSinceEpoch.toString())
+          .set(data);
+      userController.changeDone(false);
+      userController.clearCart();
+    } else {
+      Fluttertoast.showToast(msg: 'Payment failed');
+      setState(() {
+        makeOrder = false;
       });
     }
-
-    var data = {
-      'number': numbbers + 1,
-      'uid': firebaseAuth.currentUser!.uid,
-      'total': Get.find<UserController>().totalCartPrice(),
-      'discount': 0,
-      'delivery': 25,
-      'rated': false,
-      'status': 'inProgress',
-      'name': Get.find<AuthController>().userData.name,
-      'timestamp': id.toIso8601String(),
-      'orderList': Get.find<UserController>()
-          .cartList
-          .entries
-          .map((e) => {
-                'id': e.key,
-                'titleEn': e.value.productData!.titleEn,
-                'titleAr': e.value.productData!.titleAr,
-                'price': e.value.productData!.price,
-                'discount': e.value.productData!.discount,
-                'media': [e.value.productData!.media!.first],
-                'count': e.value.count,
-              })
-          .toList()
-    };
-    Fluttertoast.showToast(msg: 'orderPlaced'.tr);
-    Get.to(() => OrderDetails(order: OrderModel.fromJson(data)));
-    firestore
-        .collection('orders')
-        .doc(id.millisecondsSinceEpoch.toString())
-        .set(data);
-    Get.find<UserController>().changeDone(false);
-    Get.find<UserController>().clearCart();
   }
 
   makePayment() async {
-    var response = await http.post(
-        Uri.parse(
-            'https://api-gateway.ngenius-payments.com/identity/auth/access-token'),
-        headers: {
-          'Content-Type': 'application/vnd.ni-identity.v1+json',
-          'Authorization':
-              'Basic Yzc5MGM0YjUtYTA0NC00ZmU5LWE4ODItYmVhZWY0MDdjOGY1OmFlZjNkNWYzLTAxZjEtNGY4Zi04Mjk1LWRlMTAwN2MyODAyYQ==',
-        });
+    try {
+      var response = await http.post(
+          Uri.parse('https://uae.paymob.com/api/auth/tokens'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(
+              {"username": paymob?.username, "password": paymob?.password}));
 
-    if (response.statusCode == 200) {
-      String token = json.decode(response.body)['access_token'];
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = PaymentModel.fromMap(jsonDecode(response.body));
+        try {
+          var request = await http.post(
+              Uri.parse('https://uae.paymob.com/api/ecommerce/payment-links'),
+              headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ${data.token}',
+              },
+              body: {
+                'amount_cents':
+                    (Get.find<UserController>().totalCartPrice() * 100)
+                        .toStringAsFixed(2),
+                'full_name': auth.userData.name,
+                'email': auth.userData.email,
+                'phone_number': auth.userData.address!.first.phone,
+                'payment_methods': paymob!.id,
+                'payment_link_image': '',
+                'save_selection': 'false',
+                'is_live': 'true'
+              });
 
-      var response2 = await http.post(
-          Uri.parse(
-              'https://api-gateway.ngenius-payments.com/transactions/outlets/639a438c-1232-4674-a01f-d95d0c331116/orders'),
-          body: json.encode({
-            "action": "PURCHASE",
-            "amount": {
-              "currencyCode": "AED",
-              "value":
-                  (Get.find<UserController>().totalCartPrice() * 100).toInt()
-            },
-            "emailAddress": Get.find<AuthController>().userData.email,
-          }),
-          headers: {
-            'Content-Type': 'application/vnd.ni-payment.v2+json',
-            'Authorization': 'Bearer $token'
-          });
-
-      if (response2.statusCode == 200 || response2.statusCode == 201) {
-        var data = jsonDecode(response2.body)['_links']['payment'];
-        await Get.to(() => WebViewer(url: data['href'].toString()));
-        if (Get.find<UserController>().done) {
-          await ordering();
-        } else {
-          Fluttertoast.showToast(msg: 'paymentFailed'.tr);
+          if (request.statusCode == 200 || request.statusCode == 201) {
+            var data2 = PaymentLink.fromJson(jsonDecode(request.body));
+            await Get.to(
+              () => WebViewer(
+                url: data2.clientUrl,
+              ),
+            );
+          } else {
+            Get.log(request.body);
+          }
+        } catch (e) {
+          Get.log(e.toString());
         }
       } else {
-        Fluttertoast.showToast(msg: 'paymentFailed'.tr);
+        Get.log(response.body);
       }
-    } else {
-      Fluttertoast.showToast(msg: 'paymentFailed'.tr);
+    } catch (e) {
+      Get.log(e.toString());
     }
+  }
+
+  @override
+  void initState() {
+    paymob = auth.appData!.paymobs!
+        .firstWhere((w) => w.status, orElse: () => Paymob());
+    super.initState();
   }
 
   @override
@@ -136,7 +165,8 @@ class _CartScreenState extends State<CartScreen> {
       init: UserController(),
       builder: (userCubit) {
         return Scaffold(
-            bottomNavigationBar: userCubit.cartList.isEmpty
+            bottomNavigationBar: userCubit.cartList.isEmpty ||
+                    !auth.appData!.orders
                 ? null
                 : SafeArea(
                     child: Container(
@@ -160,22 +190,21 @@ class _CartScreenState extends State<CartScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20),
                                   onPressed: () async {
-                                    if (Get.find<AuthController>()
-                                        .userData
-                                        .uid
-                                        .isEmpty) {
-                                      Fluttertoast.showToast(
-                                          msg: 'pleaseFirst'.tr);
-                                      Get.find<AuthController>().logOut();
-                                    } else {
-                                      setState(() {
-                                        makeOrder = true;
-                                      });
+                                    if (paymob!.id.isNotEmpty) {
+                                      if (auth.userData.address!.isNotEmpty) {
+                                        setState(() {
+                                          makeOrder = true;
+                                        });
 
-                                      await makePayment();
-                                      setState(() {
-                                        makeOrder = false;
-                                      });
+                                        await ordering();
+
+                                        setState(() {
+                                          makeOrder = false;
+                                        });
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg: 'Please pick your address'.tr);
+                                      }
                                     }
                                   },
                                   height: 45,
@@ -318,65 +347,134 @@ class _CartScreenState extends State<CartScreen> {
                               }),
                         ),
                         Container(
-                          width: Get.width,
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 0.5,
-                                  blurRadius: 0.5,
-                                ),
-                              ],
-                              color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Price details:',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      'Products (${userCubit.totalCartCount()} ${'items'.tr})'),
-                                  Text(
-                                      '${'AED'.tr} ${userCubit.totalCartPrice().toStringAsFixed(2)}'),
-                                ],
-                              ),
-                              // const SizedBox(
-                              //   height: 10,
-                              // ),
-                              // Row(
-                              //   mainAxisAlignment:
-                              //       MainAxisAlignment.spaceBetween,
-                              //   children: [
-                              //     const Text('Delivery charges'),
-                              //     Text('${'AED'.tr} 25'),
-                              //   ],
-                              // ),
-                              const Divider(),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text('Total amount'),
-                                  Text(
-                                      '${'AED'.tr} ${(userCubit.totalCartPrice()).toStringAsFixed(2)}'),
-                                ],
-                              )
-                            ],
+                          margin: const EdgeInsets.only(left: 10),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Payment methods'.tr,
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w600),
                           ),
-                        )
+                        ),
+                        if (paymob!.id.isNotEmpty)
+                          Column(
+                            children: auth.appData!.paymobs!
+                                .where((w) => w.status)
+                                .map((m) => RadioListTile(
+                                      activeColor: appConstant.primaryColor,
+                                      contentPadding: EdgeInsets.zero,
+                                      value: m,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          paymob = m;
+                                        });
+                                      },
+                                      groupValue: paymob,
+                                      title: Text(m.name),
+                                    ))
+                                .toList(),
+                          ),
+                        const Divider(
+                          color: Colors.grey,
+                        ),
+                        auth.userData.address!.isEmpty
+                            ? MaterialButton(
+                                minWidth: 0,
+                                height: 25,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                onPressed: () async {
+                                  await Navigator.pushNamed(context, 'address');
+                                  setState(() {});
+                                },
+                                color: appConstant.primaryColor,
+                                shape: const RoundedRectangleBorder(
+                                    side: BorderSide(),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: Text(
+                                  'addNew'.tr,
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
+                                ),
+                              )
+                            : ListTile(
+                                leading: Icon(
+                                  Icons.location_on,
+                                  color: appConstant.primaryColor,
+                                ),
+                                title: Text(auth.userData.address!.first.name),
+                                subtitle:
+                                    Text(auth.userData.address!.first.address),
+                                trailing: MaterialButton(
+                                  minWidth: 0,
+                                  height: 25,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  onPressed: () async {
+                                    await Navigator.pushNamed(
+                                        context, 'address');
+                                    setState(() {});
+                                  },
+                                  color: appConstant.primaryColor,
+                                  child: Text(
+                                    'change'.tr,
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                        const Divider(
+                          color: Colors.grey,
+                        ),
+                        // Container(
+                        //   width: Get.width,
+                        //   margin: const EdgeInsets.all(10),
+                        //   padding: const EdgeInsets.all(10),
+                        //   decoration: BoxDecoration(
+                        //       boxShadow: [
+                        //         BoxShadow(
+                        //           color: Colors.grey.withOpacity(0.5),
+                        //           spreadRadius: 0.5,
+                        //           blurRadius: 0.5,
+                        //         ),
+                        //       ],
+                        //       color: Colors.white,
+                        //       borderRadius:
+                        //           const BorderRadius.all(Radius.circular(10))),
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       const Text(
+                        //         'Price details:',
+                        //         style: TextStyle(
+                        //             fontSize: 16, fontWeight: FontWeight.bold),
+                        //       ),
+                        //       const SizedBox(
+                        //         height: 10,
+                        //       ),
+                        //       Row(
+                        //         mainAxisAlignment:
+                        //             MainAxisAlignment.spaceBetween,
+                        //         children: [
+                        //           Text(
+                        //               'Products (${userCubit.totalCartCount()} ${'items'.tr})'),
+                        //           Text(
+                        //               '${'AED'.tr} ${userCubit.totalCartPrice().toStringAsFixed(2)}'),
+                        //         ],
+                        //       ),
+                        //       const Divider(),
+                        //       Row(
+                        //         mainAxisAlignment:
+                        //             MainAxisAlignment.spaceBetween,
+                        //         children: [
+                        //           const Text('Total amount'),
+                        //           Text(
+                        //               '${'AED'.tr} ${(userCubit.totalCartPrice()).toStringAsFixed(2)}'),
+                        //         ],
+                        //       )
+                        //     ],
+                        //   ),
+                        // )
                       ],
                     ),
             ));

@@ -51,9 +51,6 @@ class Profile extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        const SizedBox(
-          height: 10,
-        ),
         ListTile(
           tileColor: Colors.white,
           title: Text(

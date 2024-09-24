@@ -1,226 +1,127 @@
-class Order {
-  String id;
-  Links links;
-  String type;
-  Map<String, dynamic> merchantDefinedData;
-  String action;
-  Amount amount;
-  String language;
-  Map<String, dynamic> merchantAttributes;
-  String reference;
-  String outletId;
-  DateTime createDateTime;
-  PaymentMethods paymentMethods;
-  String referrer;
-  Map<String, dynamic> formattedOrderSummary;
-  String formattedOriginalAmount;
-  String formattedAmount;
-  Embedded embedded;
+class PaymentModel {
+  final String token;
+  final String profileToken;
 
-  Order({
-    required this.id,
-    required this.links,
-    required this.type,
-    required this.merchantDefinedData,
-    required this.action,
-    required this.amount,
-    required this.language,
-    required this.merchantAttributes,
-    required this.reference,
-    required this.outletId,
-    required this.createDateTime,
-    required this.paymentMethods,
-    required this.referrer,
-    required this.formattedOrderSummary,
-    required this.formattedOriginalAmount,
-    required this.formattedAmount,
-    required this.embedded,
+  PaymentModel({this.token = "", this.profileToken = ""});
+
+  Map<String, dynamic> toMap() {
+    return {"token": token, "profile_token": profileToken};
+  }
+
+  static PaymentModel fromMap(Map map) {
+    return PaymentModel(
+        token: map["token"], profileToken: map["profile_token"]);
+  }
+}
+
+class ClientInfo {
+  final String email;
+  final String fullName;
+  final String phoneNumber;
+
+  ClientInfo({
+    required this.email,
+    required this.fullName,
+    required this.phoneNumber,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json) {
-    return Order(
-      id: json['_id'],
-      links: Links.fromJson(json['_links']),
-      type: json['type'],
-      merchantDefinedData: json['merchantDefinedData'],
-      action: json['action'],
-      amount: Amount.fromJson(json['amount']),
-      language: json['language'],
-      merchantAttributes: json['merchantAttributes'],
-      reference: json['reference'],
-      outletId: json['outletId'],
-      createDateTime: DateTime.parse(json['createDateTime']),
-      paymentMethods: PaymentMethods.fromJson(json['paymentMethods']),
-      referrer: json['referrer'],
-      formattedOrderSummary: json['formattedOrderSummary'],
-      formattedOriginalAmount: json['formattedOriginalAmount'],
-      formattedAmount: json['formattedAmount'],
-      embedded: Embedded.fromJson(json['_embedded']),
+  factory ClientInfo.fromJson(Map<String, dynamic> json) {
+    return ClientInfo(
+      email: json['email'],
+      fullName: json['full_name'],
+      phoneNumber: json['phone_number'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
-      '_links': links.toJson(),
-      'type': type,
-      'merchantDefinedData': merchantDefinedData,
-      'action': action,
-      'amount': amount.toJson(),
-      'language': language,
-      'merchantAttributes': merchantAttributes,
-      'reference': reference,
-      'outletId': outletId,
-      'createDateTime': createDateTime.toIso8601String(),
-      'paymentMethods': paymentMethods.toJson(),
-      'referrer': referrer,
-      'formattedOrderSummary': formattedOrderSummary,
-      'formattedOriginalAmount': formattedOriginalAmount,
-      'formattedAmount': formattedAmount,
-      '_embedded': embedded.toJson(),
+      'email': email,
+      'full_name': fullName,
+      'phone_number': phoneNumber,
     };
   }
 }
 
-class Links {
-  Link payment;
+class PaymentLink {
+  final int id;
+  final dynamic currency;
+  final ClientInfo clientInfo;
+  final dynamic referenceId;
+  final int amountCents;
+  final dynamic paymentLinkImage;
+  final dynamic description;
+  final String createdAt;
+  final dynamic expiresAt;
+  final String clientUrl;
+  final int origin;
+  final dynamic merchantStaffTag;
+  final String state;
+  final dynamic paidAt;
+  final dynamic redirectionUrl;
+  final dynamic notificationUrl;
+  final int order;
 
-  Links({
-    required this.payment,
-  });
-
-  factory Links.fromJson(Map json) {
-    return Links(
-      payment: Link.fromJson(json['payment']),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'payment': payment.toJson(),
-    };
-  }
-}
-
-class Link {
-  String href;
-
-  Link({required this.href});
-
-  factory Link.fromJson(Map<String, dynamic> json) {
-    return Link(href: json['href']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'href': href};
-  }
-}
-
-class Amount {
-  String currencyCode;
-  int value;
-
-  Amount({required this.currencyCode, required this.value});
-
-  factory Amount.fromJson(Map<String, dynamic> json) {
-    return Amount(
-      currencyCode: json['currencyCode'],
-      value: json['value'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'currencyCode': currencyCode,
-      'value': value,
-    };
-  }
-}
-
-class PaymentMethods {
-  List<String> card;
-  List<String> wallet;
-
-  PaymentMethods({required this.card, required this.wallet});
-
-  factory PaymentMethods.fromJson(Map<String, dynamic> json) {
-    return PaymentMethods(
-      card: List<String>.from(json['card']),
-      wallet: List<String>.from(json['wallet']),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'card': card,
-      'wallet': wallet,
-    };
-  }
-}
-
-class Embedded {
-  List<Payment> payment;
-
-  Embedded({required this.payment});
-
-  factory Embedded.fromJson(Map<String, dynamic> json) {
-    return Embedded(
-      payment:
-          (json['payment'] as List).map((i) => Payment.fromJson(i)).toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'payment': payment.map((i) => i.toJson()).toList(),
-    };
-  }
-}
-
-class Payment {
-  String id;
-  Links links;
-  String reference;
-  String state;
-  Amount amount;
-  DateTime updateDateTime;
-  String outletId;
-  String orderReference;
-
-  Payment({
+  PaymentLink({
     required this.id,
-    required this.links,
-    required this.reference,
+    this.currency,
+    required this.clientInfo,
+    this.referenceId,
+    required this.amountCents,
+    this.paymentLinkImage,
+    this.description,
+    required this.createdAt,
+    this.expiresAt,
+    required this.clientUrl,
+    required this.origin,
+    this.merchantStaffTag,
     required this.state,
-    required this.amount,
-    required this.updateDateTime,
-    required this.outletId,
-    required this.orderReference,
+    this.paidAt,
+    this.redirectionUrl,
+    this.notificationUrl,
+    required this.order,
   });
 
-  factory Payment.fromJson(Map<String, dynamic> json) {
-    return Payment(
-      id: json['_id'],
-      links: Links.fromJson(json['_links']),
-      reference: json['reference'],
+  factory PaymentLink.fromJson(Map<String, dynamic> json) {
+    return PaymentLink(
+      id: json['id'],
+      currency: json['currency'],
+      clientInfo: ClientInfo.fromJson(json['client_info']),
+      referenceId: json['reference_id'],
+      amountCents: json['amount_cents'],
+      paymentLinkImage: json['payment_link_image'],
+      description: json['description'],
+      createdAt: json['created_at'],
+      expiresAt: json['expires_at'],
+      clientUrl: json['client_url'],
+      origin: json['origin'],
+      merchantStaffTag: json['merchant_staff_tag'],
       state: json['state'],
-      amount: Amount.fromJson(json['amount']),
-      updateDateTime: DateTime.parse(json['updateDateTime']),
-      outletId: json['outletId'],
-      orderReference: json['orderReference'],
+      paidAt: json['paid_at'],
+      redirectionUrl: json['redirection_url'],
+      notificationUrl: json['notification_url'],
+      order: json['order'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
-      '_links': links.toJson(),
-      'reference': reference,
+      'id': id,
+      'currency': currency,
+      'client_info': clientInfo.toJson(),
+      'reference_id': referenceId,
+      'amount_cents': amountCents,
+      'payment_link_image': paymentLinkImage,
+      'description': description,
+      'created_at': createdAt,
+      'expires_at': expiresAt,
+      'client_url': clientUrl,
+      'origin': origin,
+      'merchant_staff_tag': merchantStaffTag,
       'state': state,
-      'amount': amount.toJson(),
-      'updateDateTime': updateDateTime.toIso8601String(),
-      'outletId': outletId,
-      'orderReference': orderReference,
+      'paid_at': paidAt,
+      'redirection_url': redirectionUrl,
+      'notification_url': notificationUrl,
+      'order': order,
     };
   }
 }

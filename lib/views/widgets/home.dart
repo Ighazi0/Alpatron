@@ -21,7 +21,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  CarouselController controller = CarouselController();
   TextEditingController search = TextEditingController();
   List<CategoryModel> categories =
       staticData.categories.map((e) => CategoryModel.fromJson(e)).toList();
@@ -147,7 +146,6 @@ class _HomeState extends State<Home> {
                                       return Column(
                                         children: [
                                           CarouselSlider(
-                                            carouselController: controller,
                                             options: CarouselOptions(
                                                 autoPlay: true,
                                                 height: 200,
@@ -189,8 +187,6 @@ class _HomeState extends State<Home> {
                                                 .entries
                                                 .map((entry) {
                                               return GestureDetector(
-                                                onTap: () => controller
-                                                    .animateToPage(entry.key),
                                                 child: Container(
                                                   width: 8.0,
                                                   height: 8.0,

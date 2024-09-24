@@ -41,40 +41,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
-          // if (auth.userData.uid.isNotEmpty)
-          //   if (firebaseAuth.currentUser?.providerData.first.providerId ==
-          //       'password')
-          //     ListTile(
-          //       title: Text(
-          //         'changeEmail'.tr(context),
-          //       ),
-          //       onTap: () {},
-          //       leading: const Icon(Icons.email),
-          //     ),
-          // if (auth.userData.uid.isNotEmpty)
-          //   if (firebaseAuth.currentUser?.providerData.first.providerId ==
-          //       'password')
-          //     ListTile(
-          //       title: Text(
-          //         'changePass'.tr(context),
-          //       ),
-          //       onTap: () {},
-          //       leading: const Icon(Icons.password),
-          //     ),
-          // ListTile(
-          //   title: Text(
-          //     'changeLang'.tr(context),
-          //   ),
-          //   onTap: () {
-          //     if (locale.locale == 'ar') {
-          //       locale.changeLanguage('en');
-          //     } else {
-          //       locale.changeLanguage('ar');
-          //     }
-          //   },
-          //   leading: const Icon(Icons.language),
-          // ),
-
           ListTile(
             title: Text(
               'deleteAccount'.tr,

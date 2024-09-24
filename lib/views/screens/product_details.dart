@@ -1,5 +1,4 @@
 import 'package:alnoor/controllers/auth_controller.dart';
-import 'package:alnoor/controllers/my_app.dart';
 import 'package:alnoor/controllers/user_controller.dart';
 import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/models/product_model.dart';
@@ -18,7 +17,6 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   bool favorite = false;
-  CarouselController controller = CarouselController();
   int current = 0, count = 1;
 
   @override
@@ -64,7 +62,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                       Column(
                         children: [
                           CarouselSlider(
-                            carouselController: controller,
                             options: CarouselOptions(
                                 autoPlay: true,
                                 height: 200,
@@ -99,8 +96,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 .entries
                                 .map((entry) {
                               return GestureDetector(
-                                onTap: () =>
-                                    controller.animateToPage(entry.key),
                                 child: Container(
                                   width: 8.0,
                                   height: 8.0,
@@ -220,15 +215,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         Icons.add_shopping_cart,
                                         color: appConstant.primaryColor,
                                       )),
-                              IconButton(
-                                  onPressed: () {
-                                    staticFunctions
-                                        .shareData(widget.product.link);
-                                  },
-                                  icon: Icon(
-                                    Icons.share,
-                                    color: appConstant.primaryColor,
-                                  ))
                             ],
                           ),
                           if (widget.product.descriptionEn.isNotEmpty)

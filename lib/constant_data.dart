@@ -11,6 +11,7 @@ import 'package:alnoor/views/screens/orders_screen.dart';
 import 'package:alnoor/views/screens/payment_screen.dart';
 import 'package:alnoor/views/screens/register_screen.dart';
 import 'package:alnoor/views/screens/settings_screen.dart';
+import 'package:alnoor/views/screens/updated_screen.dart';
 import 'package:alnoor/views/screens/user_screen.dart';
 import 'package:alnoor/views/widgets/wish_list.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class AppConstant {
 
   Map<String, Widget Function(BuildContext)> routes = {
     'register': (context) => const RegisterScreen(),
+    'updated': (context) => const UpdatedScreen(),
     'user': (context) => const UserScreen(),
     'payment': (context) => const PaymentScreen(),
     'orders': (context) => const OrdersScreen(),

@@ -1,6 +1,5 @@
 import 'package:alnoor/controllers/language_controller.dart';
 import 'package:alnoor/controllers/static_data.dart';
-import 'package:alnoor/controllers/static_functions.dart';
 import 'package:alnoor/controllers/static_widgets.dart';
 import 'package:alnoor/get_initial.dart';
 import 'package:alnoor/languages.dart';
@@ -10,7 +9,6 @@ import 'package:get/get.dart';
 
 StaticData staticData = StaticData();
 StaticWidgets staticWidgets = StaticWidgets();
-StaticFunctions staticFunctions = StaticFunctions();
 
 class MyApp extends StatelessWidget {
   @override

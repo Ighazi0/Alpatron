@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:alnoor/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +18,6 @@ class WebViewer extends StatefulWidget {
 class _WebViewerState extends State<WebViewer> {
   late final WebViewController controller;
   bool loading = true;
-  late Timer timer;
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -37,21 +31,23 @@ class _WebViewerState extends State<WebViewer> {
             });
           },
           onUrlChange: (UrlChange change) async {
-            timer = Timer.periodic(const Duration(seconds: 2), (e) {
-              Future future = controller
-                  .runJavaScriptReturningResult("document.body.innerText");
-              future.then((data) {
-                String text = GetPlatform.isIOS
-                    ? data.toString()
-                    : jsonDecode(data).toString();
-                Get.log(text);
-                if (text.removeAllWhitespace
-                    .toLowerCase()
-                    .contains('paymentaccepted')) {
-                  Get.find<UserController>().changeDone(true);
-                  Get.back();
-                }
-              });
+            Get.log(change.url.toString());
+
+            Future future = controller
+                .runJavaScriptReturningResult("document.body.innerText");
+            future.then((data) {
+              String text = Platform.isIOS
+                  ? data.toString()
+                  : jsonDecode(data).toString();
+              Get.log(text);
+              if (text
+                  .toLowerCase()
+                  .removeAllWhitespace
+                  .contains('paymentsuccessful')) {
+                Get.find<UserController>().changeDone(true);
+
+                Get.back();
+              }
             });
           },
         ),
